@@ -1,0 +1,99 @@
+ Sophomore       Yes       Wed         A     >= 10  Moderate
+    Junior       Yes       Wed         B     4 - 6 Difficult
+ Sophomore       Yes       Wed         A     7 - 9  Moderate
+ Sophomore        No       Fri         A     4 - 6  Moderate
+ Sophomore       Yes       Wed         A     4 - 6  Moderate
+    Junior       Yes       Wed         B     0 - 3  Moderate
+  Freshman       Yes       Fri         A     >= 10 Difficult
+ Sophomore       Yes       Fri         A     >= 10 Difficult
+    Junior       Yes       Wed         B     4 - 6  Moderate
+ Sophomore       Yes       Wed         A     4 - 6  Moderate
+  Freshman       Yes       Fri         A     4 - 6  Moderate
+    Junior       Yes       Wed         B     0 - 3 Difficult
+  Freshman        No       Wed         A     7 - 9  Moderate
+ Sophomore        No       Wed         F     >= 10 Difficult
+ Sophomore       Yes       Wed         A     >= 10  Moderate
+ Sophomore        No       Wed         A     4 - 6 Difficult
+      Null      Null      Null      Null      Null      Null
+  Freshman        No       Wed         A     4 - 6  Moderate
+ Sophomore       Yes       Wed         A     0 - 3  Moderate
+ Sophomore        No       Wed         B     4 - 6  Moderate
+ Sophomore       Yes       Wed         A     4 - 6  Moderate
+ Sophomore        No       Wed         A     4 - 6 Difficult
+ Sophomore        No       Wed         A     4 - 6 Difficult
+ Sophomore       Yes       Wed         C     4 - 6 Difficult
+ Sophomore        No       Fri         B     7 - 9 Difficult
+ Sophomore       Yes       Wed         A     4 - 6      Easy
+    Junior        No       Thu         C     >= 10 Difficult
+  Freshman        No       Fri         A     4 - 6  Moderate
+ Sophomore        No       Wed         B     7 - 9  Moderate
+    Junior       Yes       Fri         B     0 - 3  Moderate
+ Sophomore        No       Fri         B     4 - 6 Difficult
+ Sophomore       Yes       Wed         B     >= 10 Difficult
+ Sophomore        No       Wed         A     7 - 9 Difficult
+ Sophomore        No       Fri         B     4 - 6  Moderate
+  Freshman        No       Fri         A     >= 10  Moderate
+    Junior       Yes       Fri         A     4 - 6  Moderate
+ Sophomore        No       Wed         A     4 - 6  Moderate
+  Freshman        No       Wed         B     7 - 9  Moderate
+ Sophomore       Yes       Wed         B     7 - 9  Moderate
+ Sophomore       Yes       Wed         B     4 - 6  Moderate
+ Sophomore       Yes       Fri         B     4 - 6  Moderate
+    Junior       Yes       Wed         A     4 - 6  Moderate
+  Freshman        No       Fri         A     7 - 9  Moderate
+  Freshman        No       Fri         A     7 - 9 Difficult
+  Freshman        No       Wed         A     4 - 6  Moderate
+ Sophomore       Yes       Wed         A     4 - 6  Moderate
+ Sophomore        No       Fri         B     4 - 6 Difficult
+ Sophomore        No       Fri         A     7 - 9 Difficult
+  Freshman        No       Fri         A     4 - 6 Difficult
+ Sophomore       Yes       Wed         B     0 - 3  Moderate
+ Sophomore        No       Wed         B     4 - 6  Moderate
+ Sophomore        No       Wed         A     7 - 9 Difficult
+ Sophomore        No       Fri         C     4 - 6 Difficult
+ Sophomore        No       Wed         B     4 - 6 Difficult
+    Senior       Yes       Fri         A     7 - 9 Difficult
+    Junior       Yes       Wed         A     7 - 9  Moderate
+  Freshman        No       Wed         A     4 - 6  Moderate
+ Sophomore       Yes       Wed         A     4 - 6      Easy
+    Senior        No       Fri         B     >= 10  Moderate
+ Sophomore        No       Fri         A     4 - 6  Moderate
+ Sophomore        No       Wed         B     7 - 9 Difficult
+ Sophomore        No       Wed         A     4 - 6  Moderate
+    Junior       Yes       Fri         B     4 - 6  Moderate
+ Sophomore        No       Fri         B     7 - 9  Moderate
+ Sophomore        No       Wed         B     4 - 6  Moderate
+ Sophomore       Yes       Wed         A     0 - 3  Moderate
+ Sophomore        No       Fri         A     7 - 9 Difficult
+ Sophomore       Yes       Wed         A     0 - 3  Moderate
+ Sophomore        No       Wed         B     7 - 9 Difficult
+ Sophomore        No       Wed         B     7 - 9 Difficult
+ Sophomore        No       Wed         C     >= 10  Moderate
+ Sophomore       Yes       Fri         B     4 - 6  Moderate
+ Sophomore        No       Fri         A     4 - 6  Moderate
+  Freshman        No       Wed         A     7 - 9  Moderate
+ Sophomore        No       Fri         B     4 - 6 Difficult
+ Sophomore       Yes       Wed         A     7 - 9  Moderate
+ Sophomore       Yes       Wed         A     7 - 9  Moderate
+ Sophomore        No       Wed         B     4 - 6 Difficult
+  Freshman        No       Wed         C     7 - 9 Difficult
+  Freshman        No       Fri         A     0 - 3 Difficult
+ Sophomore        No       Wed         A     4 - 6  Moderate
+  Freshman        No       Wed         B     7 - 9 Difficult
+ Sophomore       Yes       Wed         A     4 - 6  Moderate
+ Sophomore        No       Wed         A     7 - 9 Difficult
+    Junior       Yes       Fri         B     4 - 6 Difficult
+ Sophomore       Yes       Fri         A     4 - 6      Easy
+  Freshman       Yes       Fri         A     7 - 9  Moderate
+  Freshman       Yes       Wed         B     4 - 6  Moderate
+ Sophomore       Yes       Fri         A     4 - 6  Moderate
+ Sophomore        No       Fri         C     7 - 9 Difficult
+ Sophomore       Yes       Wed         A     7 - 9  Moderate
+    Junior        No       Wed         B     4 - 6 Difficult
+ Sophomore       Yes       Wed         F     >= 10 Difficult
+ Sophomore       Yes       Fri         B     7 - 9  Moderate
+  Freshman        No       Fri         B     0 - 3  Moderate
+ Sophomore        No       Wed         B     4 - 6  Moderate
+  Freshman        No       Wed         A     4 - 6  Moderate
+ Sophomore       Yes       Wed         B     7 - 9  Moderate
+ Sophomore       Yes       Wed         A     4 - 6  Moderate
