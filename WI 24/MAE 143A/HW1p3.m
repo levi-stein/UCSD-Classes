@@ -39,4 +39,13 @@ d0 = b0/(-1*p(1)*p(2)*p(3));
 y = @(t) d1*exp(p(1)*t) + d2*exp(p(2)*t) + d3*exp(p(3)*t) + d0; % define our inverse laplace transform y'(t)
 plot(t,y(t),'b-')
 
-% equil point 2 has same poles as equil point 1 thus the same graph
+% equil point 2 has same poles as equil point 1
+hold on;
+b1 = -1*sqrt(47); b0 = -1*4*sqrt(47);
+d1 = (b1*p(1)+b0)/((p(1)-p(2))*(p(1)-p(3))*p(1));
+d2 = (b1*p(2)+b0)/((p(2)-p(1))*(p(2)-p(3))*p(2));
+d3 = (b1*p(3)+b0)/((p(3)-p(1))*(p(3)-p(2))*p(3));
+d0 = b0/(-1*p(1)*p(2)*p(3));
+
+y = @(t) d1*exp(p(1)*t) + d2*exp(p(2)*t) + d3*exp(p(3)*t) + d0;
+plot(t,y(t),'r-')
