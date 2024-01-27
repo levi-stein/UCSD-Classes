@@ -20,7 +20,7 @@ denG=denG(end:-1:1)
 denG1 = [1, 6, 47+1+4+4-4, 4*(47+47+1-1)];
 RR_roots(denG1); % poles for 1st eq. point
 denG2 = [1, 6, 47+1+4+4-4, 4*(47+47+1-1)];
-RR_roots(denG2); % poles for 2nd eq. point
+RR_roots(denG2); % poles for 2nd eq. point (note: they are equal to poles of 1st eq. point)
 denG3 = [1, 6, 1+4+4+4*(-48), 4*(1-48)];
 RR_roots(denG3); % poles for 3rd eq. point
 
@@ -37,4 +37,4 @@ d0 = b0/(-1*p(1)*p(2)*p(3));
 y = @(t) d1*exp(p(1)*t) + d2*exp(p(2)*t) + d3*exp(p(3)*t) + d0; % define our inverse laplace transform y'(t)
 plot(t,y(t),'b-')
 
-% equil point 2 has same poles as equil point 1
+% equil point 2 has same poles as equil point 1 thus the same graph
