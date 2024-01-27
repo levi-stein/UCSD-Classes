@@ -17,6 +17,8 @@ denG=simplify(denG/denG(end));
 numG=numG(end:-1:1)   % this reverses the order of the vector of coefficients.
 denG=denG(end:-1:1)
 
+sym_poles = RR_roots(denG); %these are the symbolic poles
+
 denG1 = [1, 6, 47+1+4+4-4, 4*(47+47+1-1)];
 RR_roots(denG1); % poles for 1st eq. point
 denG2 = [1, 6, 47+1+4+4-4, 4*(47+47+1-1)];
