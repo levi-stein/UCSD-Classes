@@ -50,3 +50,4 @@ y = @(t) d1*exp(p(1)*t) + d2*(p(2)*t); % plotting inverse laplace transform
 t = 0:0.1:10;
 figure;
 plot(t,y(t),'-b');
+
