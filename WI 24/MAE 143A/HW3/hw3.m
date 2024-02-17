@@ -1,3 +1,4 @@
+
 %% Problem 0
 % I used RR_bode_plot_tests to graph all of these plots
 
@@ -39,6 +40,7 @@ denG=simplify(denG/denG(end));
 numG=numG(end:-1:1)   % this reverses the order of the vector of coefficients.
 denG=denG(end:-1:1)
 pause;
+
 %% Fiddling around
 clear; syms L1 L2 L3 L4 L5 x y v w
 eqn1= L1*y==v+L2*w;
