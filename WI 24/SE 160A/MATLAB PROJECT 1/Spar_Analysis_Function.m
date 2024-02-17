@@ -212,30 +212,142 @@ GJ = Go*10^6*((pi/2)*((Ro+(to/2))^4 - (Ro-(to/2))^4));
 % .                Concentrated Forces and Applied Aerodynamic Loads
 % . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
    disp('     (3) Calculate Root Stress Resultants for Applied Concentrated Loads and Aero Loads')
-mx = @(x) mx0 + mx1*(x/Lo);
-AeroX = integral(mx,0,Lo);
+MX = @(x) mx0 + mx1*(x/Lo);
 Vxo = Fx1 + Fx2;
-py = @(x) py0 + pyr*(x/Lo).^rth;
-AeroY = integral(py,0,Lo);
-Vyo = Fy1 + Fy2 + AeroY;
-pz = @(x) pz0 + pz2*(x/Lo).^2 +pz4*(x/Lo).^4;
-AeroZ = integral(pz,0,Lo);
-Vzo = Fz1 + Fz2 + AeroZ - LF*(rho*A*Lo);
-Mxo = Mx1 + Mx2 + AeroX;
-Myo = My1 + My2;
-Mzo = Mz1 + Mz2;
+PY = @(x) py0 + pyr*(x/Lo).^rth;
+Vyo = Fy1 + Fy2 + py0*Lo + (pyr/(rth+1))*((Lo^(rth+1))/(Lo^rth));
+PZ = @(x) pz0 + pz2*(x/Lo).^2 +pz4*(x/Lo).^4;
+Vzo = Fz1 + Fz2 + pz0*(Lo) + (pz2)*((Lo^3)/(3*Lo^2)) + (pz4)*((Lo^5)/(5*Lo^4)) - LF*(rho*A*Lo);
+Mxo = Mx1 + Mx2 + mx0*Lo + (mx1/Lo)*(Lo^2/2);
+pzz =@(x) x.*(pz0 + pz2*(x/Lo).^2 +pz4*(x/Lo).^4);
+LM = (pz0)*((Lo^2)/2) + (pz2/(Lo^2))*((Lo^4)/4) + (pz4/(Lo^4))*((Lo^6)/6);
+Myo = LF*(rho*A*Lo)*(Lo/2) - LM + My1 + My2 - Fz1*(x1L*Lo) - Fz2*(x2L*Lo);
+pyy = @(x) x.*(py0 + pyr*(x/Lo).^rth);
+DM = integral(pyy,0,Lo);
+Mzo = DM + Mz1 + Mz2 + Fy1*(x1L*Lo) + Fy2*(x2L*Lo);
 % . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 % .  SECTION (#4): Calculate Allowable Properties, Root Stresses and Margin
 % .                of Safety
 % . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
    disp('     (4) Calculate Allowable Properties, Root Stresses, and Margins of Safety')
 
+S_allow_T = min([(Syt/SFy) (Sut/SFu)]);
+S_allow_C = min([(Syc/SFy) (Suc/SFu)]);
+S_allow_S = min([(Sys/SFy) (Sus/SFu)]);
 
+Sxxo_A = (Eo*Myo/EIyy)*(Ro+(to/2))*10^3;
+Sxxo_B = (Eo*Mzo/EIzz)*(Ro+(to/2))*10^3;
+Sxxo_C = -1*(Eo*Myo/EIyy)*(Ro+(to/2))*10^3;
+Sxxo_D = -1*(Eo*Mzo/EIzz)*(Ro+(to/2))*10^3;
+
+J = ((pi/2)*((Ro+(to/2))^4 - (Ro-(to/2))^4));
+Txyo_A = ((Vyo/(pi*Ro*to)) - (Mxo/J)*(Ro+(to/2)))*10^-3;
+Txyo_B = 0;
+Txyo_C = ((Vyo/(pi*Ro*to)) + (Mxo/J)*(Ro+(to/2)))*10^-3;
+Txyo_D = 0;
+
+Txzo_A = 0;
+Txzo_B = ((Vzo/(pi*Ro*to)) - (Mxo/J)*(Ro+(to/2)))*10^-3;
+Txzo_C = 0;
+Txzo_D = ((Vzo/(pi*Ro*to)) + (Mxo/J)*(Ro+(to/2)))*10^-3;
+
+MS_A = (S_allow_T/(sqrt(Sxxo_A^2 + 3*Txyo_A^2))) - 1;
+MS_B = (S_allow_T/(sqrt(Sxxo_B^2 + 3*Txzo_B^2))) - 1;
+MS_C = (S_allow_T/(sqrt(Sxxo_C^2 + 3*Txyo_C^2))) - 1;
+MS_D = (S_allow_T/(sqrt(Sxxo_D^2 + 3*Txzo_D^2))) - 1;
 % . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 % .  SECTION (#5): Calculate the Data Arrays for Plotting
 % . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
    disp('     (5) Calculate the Data Arrays for Future Plotting')
+x = linspace(0,Lo,nplot);
+for n = 1:nplot
+    py(n) = PY(x(n));
+    pz(n) = PZ(x(n));
+    mx(n) = MX(x(n));
+end
+Vx(1) = Vxo;
+Vz(1) = Vzo;
+Vy(1) = Vyo;
+for n = 1:nplot 
+    if x(n) > 0 && (x(n)/Lo) <= x1L
+    Vx(n) = Vxo;
+    Vy(n) = Vyo - py0*x(n) - (pyr/(rth+1))*((x(n)^(rth+1))/(Lo^rth)); 
+    Vz(n) = Vzo - pz0*(x(n)) - (pz2)*((x(n)^3)/(3*Lo^2)) - (pz4)*((x(n)^5)/(5*Lo^4)) + (LF*rho*A*Lo*(x(n)/Lo));
+    elseif (x(n)/Lo) > x1L && (x(n)/Lo) <= x2L
+    Vx(n) = Vxo - Fx1;
+    Vy(n) = Vyo - Fy1 - py0*x(n) - (pyr/(rth+1))*((x(n)^(rth+1))/(Lo^rth));
+    Vz(n) = Vzo - Fz1 - pz0*(x(n)) - (pz2)*((x(n)^3)/(3*Lo^2)) - (pz4)*((x(n)^5)/(5*Lo^4)) + (LF*rho*A*Lo*(x(n)/Lo));
+    elseif (x(n)/Lo) > x1L && (x(n)/Lo) > x2L
+    Vx(n) = Vxo - Fx1 - Fx2;
+    Vy(n) = Vyo - Fy1 - Fy2 - py0*x(n) - (pyr/(rth+1))*((x(n)^(rth+1))/(Lo^rth));
+    Vz(n) = Vzo - Fz1 - Fz2 - pz0*(x(n)) - (pz2)*((x(n)^3)/(3*Lo^2)) - (pz4)*((x(n)^5)/(5*Lo^4)) + (LF*rho*A*Lo*(x(n)/Lo));
+    end
+end
+Mx(1) = Mxo;
+My(1) = Myo;
+Mz(1) = Mzo;
+for n = 1:nplot 
+    if x(n) > 0 && (x(n)/Lo) <= x1L 
+    Mx(n) = Mxo - mx0*(x(n)) - (mx1/Lo)*((x(n)^2)/2);
+    My(n) = Myo + Vzo*x(n) - pz0*((x(n)^2)/2) - (pz2/(Lo^2))*((x(n)^4)/4) - (pz4/(Lo^4))*((x(n)^6)/6) + (LF*rho*A*((x(n)^2)/2));
+    Mz(n) = Mzo - Vyo*(x(n)) + py0*(x(n)^2)/2 + pyr*(x(n)^(rth+2))/((rth+1)*(rth+2)*(Lo^rth));
+    elseif (x(n)/Lo) > x1L && (x(n)/Lo) <= x2L
+    Mx(n) = Mxo - Mx1 - mx0*(x(n)) - (mx1/Lo)*((x(n)^2)/2);
+    My(n) = Myo - My1 - Fz1*(x(n) - (x1L*Lo)) + Vzo*x(n) - pz0*((x(n)^2)/2) - (pz2/(Lo^2))*((x(n)^4)/4) - (pz4/(Lo^4))*((x(n)^6)/6) + (LF*rho*A*((x(n)^2)/2));
+    Mz(n) = Mzo - Mz1 + Fy1*(x(n) - (x1L*Lo)) - Vyo*(x(n)) + py0*(x(n)^2)/2 + pyr*(x(n)^(rth+2))/((rth+1)*(rth+2)*(Lo^rth));
+    elseif (x(n)/Lo) > x1L && (x(n)/Lo) > x2L
+    Mx(n) = Mxo - Mx1 - Mx2 - mx0*(x(n)) - (mx1/Lo)*((x(n)^2)/2);
+    My(n) = Myo - My1 - My2 - Fz1*(x(n) - (x1L*Lo)) - Fz2*(x(n) - (x2L*Lo)) + Vzo*x(n) - pz0*((x(n)^2)/2) - (pz2/(Lo^2))*((x(n)^4)/4) - (pz4/(Lo^4))*((x(n)^6)/6) + (LF*rho*A*((x(n)^2)/2));
+    Mz(n) = Mzo - Mz1 - Mz2 + Fy1*(x(n) - (x1L*Lo)) + Fy2*(x(n) - (x2L*Lo)) - Vyo*x(n) + py0*((x(n)^2)/2) + pyr*(x(n)^(rth+2))/((rth+1)*(rth+2)*(Lo^rth));
+    end
+end
 
+for n = 1:nplot
+
+    Sxx_B(n) = (Eo*Mz(n)/EIzz)*(Ro+(to/2))*10^3;
+
+    Sxx_D(n) = -1*(Eo*Mz(n)/EIzz)*(Ro+(to/2))*10^3;
+
+    Tau_A(n) = ((Vy(n)/(pi*Ro*to)) - (Mx(n)/J)*(Ro+(to/2)))*10^-3;
+    Tau_B(n) = ((Vz(n)/(pi*Ro*to)) - (Mx(n)/J)*(Ro+(to/2)))*10^-3;
+    Tau_C(n) = ((Vy(n)/(pi*Ro*to)) + (Mx(n)/J)*(Ro+(to/2)))*10^-3;
+    Tau_D(n) = ((Vz(n)/(pi*Ro*to)) + (Mx(n)/J)*(Ro+(to/2)))*10^-3;
+end
+
+for n = 1:nplot 
+    if x(n) > 0 && (x(n)/Lo) <= x1L 
+    DvDx(n) = (Mzo*x(n) - Vyo*((x(n)^2)/2) + (py0/2)*((x(n)^3)/3) + pyr*(x(n)^(rth+3))/((rth+1)*(rth+2)*(rth+3)*(Lo^rth)))/EIyy;
+
+    elseif (x(n)/Lo) > x1L && (x(n)/Lo) <= x2L
+    DvDx(n) = (Mzo*x(n) - Mz1*x(n) + Fy1*((x(n)^2)/2) - Vyo*((x(n)^2)/2) + (py0/2)*((x(n)^3)/3) + pyr*(x(n)^(rth+3))/((rth+1)*(rth+2)*(rth+3)*(Lo^rth)))/EIyy;
+
+    elseif (x(n)/Lo) > x1L && (x(n)/Lo) > x2L
+    DvDx(n) = (Mzo*x(n) - Mz1*x(n) - Mz2*x(n) + Fy1*((x(n)^2)/2) + Fy2*((x(n)^2)/2) - Vyo*((x(n)^2)/2) + (py0/2)*((x(n)^3)/3) + pyr*(x(n)^(rth+3))/((rth+1)*(rth+2)*(rth+3)*(Lo^rth)))/EIyy;
+
+
+    end
+end
+
+Disp_X(1) = 0;
+Disp_Y(1) = 0;
+Disp_Z(1) = 0;
+
+for n = 1:nplot
+    if x(n) > 0 && (x(n)/Lo) <= x1L
+    Disp_X(n) = x(n)*0;
+    Disp_Y(n) = (Mzo*((x(n)^2)/2) - (Vyo/2)*((x(n)^3)/3) + (py0/6)*((x(n)^4)/4) + pyr*(x(n)^(rth+4))/((rth+1)*(rth+2)*(rth+3)*(rth+4)*(Lo^rth)))/EIyy;
+
+    elseif (x(n)/Lo) > x1L && (x(n)/Lo) <= x2L
+    Disp_X(n) = x(n)*0;
+    Disp_Y(n) = (Mzo*((x(n)^2)/2) - Mz1*(x(n)^2)/2 + Fy1*((x(n)^3)/6) - (Vyo/2)*((x(n)^3)/3) + (py0/6)*((x(n)^4)/4) + pyr*(x(n)^(rth+4))/((rth+1)*(rth+2)*(rth+3)*(rth+4)*(Lo^rth)))/EIyy;
+
+    elseif (x(n)/Lo) > x1L && (x(n)/Lo) > x2L
+    Disp_X(n) = x(n)*0;
+    Disp_Y(n) = (Mzo*((x(n)^2)/2) - Mz1*(x(n)^2)/2  - Mz2*(x(n)^2/2) + Fy1*((x(n)^3)/6) + Fy2*((x(n)^3)/6) - (Vyo/2)*((x(n)^3)/3) + (py0/6)*((x(n)^4)/4) + pyr*(x(n)^(rth+4))/((rth+1)*(rth+2)*(rth+3)*(rth+4)*(Lo^rth)))/EIyy;
+
+    end
+
+end
 % . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 % .  SECTION (#6): Pack Calculated Data into the "dataOut1" Array size: (36)
 % . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
