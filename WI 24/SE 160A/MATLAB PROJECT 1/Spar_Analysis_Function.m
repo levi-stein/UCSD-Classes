@@ -289,23 +289,23 @@ Mz(1) = Mzo;
 for n = 1:nplot 
     if x(n) > 0 && (x(n)/Lo) <= x1L 
     Mx(n) = Mxo - mx0*(x(n)) - (mx1/Lo)*((x(n)^2)/2);
-    My(n) = Myo + Vzo*x(n) - pz0*((x(n)^2)/2) - (pz2/(Lo^2))*((x(n)^4)/4) - (pz4/(Lo^4))*((x(n)^6)/6) + (LF*rho*A*((x(n)^2)/2));
+    My(n) = Myo + Vzo*x(n) - pz0*((x(n)^2)/2) - (pz2/(Lo^2))*((x(n)^4)/12) - (pz4/(Lo^4))*((x(n)^6)/30) + (LF*rho*A*((x(n)^2)/2));
     Mz(n) = Mzo - Vyo*(x(n)) + py0*(x(n)^2)/2 + pyr*(x(n)^(rth+2))/((rth+1)*(rth+2)*(Lo^rth));
     elseif (x(n)/Lo) > x1L && (x(n)/Lo) <= x2L
     Mx(n) = Mxo - Mx1 - mx0*(x(n)) - (mx1/Lo)*((x(n)^2)/2);
-    My(n) = Myo - My1 - Fz1*(x(n) - (x1L*Lo)) + Vzo*x(n) - pz0*((x(n)^2)/2) - (pz2/(Lo^2))*((x(n)^4)/4) - (pz4/(Lo^4))*((x(n)^6)/6) + (LF*rho*A*((x(n)^2)/2));
+    My(n) = Myo - My1 - Fz1*(x(n) - (x1L*Lo)) + Vzo*x(n) - pz0*((x(n)^2)/2) - (pz2/(Lo^2))*((x(n)^4)/12) - (pz4/(Lo^4))*((x(n)^6)/30) + (LF*rho*A*((x(n)^2)/2));
     Mz(n) = Mzo - Mz1 + Fy1*(x(n) - (x1L*Lo)) - Vyo*(x(n)) + py0*(x(n)^2)/2 + pyr*(x(n)^(rth+2))/((rth+1)*(rth+2)*(Lo^rth));
     elseif (x(n)/Lo) > x1L && (x(n)/Lo) > x2L
     Mx(n) = Mxo - Mx1 - Mx2 - mx0*(x(n)) - (mx1/Lo)*((x(n)^2)/2);
-    My(n) = Myo - My1 - My2 - Fz1*(x(n) - (x1L*Lo)) - Fz2*(x(n) - (x2L*Lo)) + Vzo*x(n) - pz0*((x(n)^2)/2) - (pz2/(Lo^2))*((x(n)^4)/4) - (pz4/(Lo^4))*((x(n)^6)/6) + (LF*rho*A*((x(n)^2)/2));
+    My(n) = Myo - My1 - My2 - Fz1*(x(n) - (x1L*Lo)) - Fz2*(x(n) - (x2L*Lo)) + Vzo*x(n) - pz0*((x(n)^2)/2) - (pz2/(Lo^2))*((x(n)^4)/12) - (pz4/(Lo^4))*((x(n)^6)/30) + (LF*rho*A*((x(n)^2)/2));
     Mz(n) = Mzo - Mz1 - Mz2 + Fy1*(x(n) - (x1L*Lo)) + Fy2*(x(n) - (x2L*Lo)) - Vyo*x(n) + py0*((x(n)^2)/2) + pyr*(x(n)^(rth+2))/((rth+1)*(rth+2)*(Lo^rth));
     end
 end
 
 for n = 1:nplot
-
+    Sxx_A(n) = (Eo*My(n)/EIyy)*(Ro+(to/2))*10^3;
     Sxx_B(n) = (Eo*Mz(n)/EIzz)*(Ro+(to/2))*10^3;
-
+    Sxx_B(n) = -1*(Eo*My(n)/EIyy)*(Ro+(to/2))*10^3;
     Sxx_D(n) = -1*(Eo*Mz(n)/EIzz)*(Ro+(to/2))*10^3;
 
     Tau_A(n) = ((Vy(n)/(pi*Ro*to)) - (Mx(n)/J)*(Ro+(to/2)))*10^-3;
