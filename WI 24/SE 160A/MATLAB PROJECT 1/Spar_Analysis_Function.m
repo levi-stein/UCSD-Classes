@@ -319,8 +319,25 @@ for n = 1:nplot
     Tau_C(n) = ((Vy(n)/(pi*Ro*to)) + (Mx(n)/J)*(Ro+(to/2)))*10^-3;
     Tau_D(n) = ((Vz(n)/(pi*Ro*to)) + (Mx(n)/J)*(Ro+(to/2)))*10^-3;
 end
-i = find((x/Lo) == x1L);
-j = find((x/Lo) == x2L);
+
+if x1L > 0
+    i = find((x/Lo) == x1L);
+else
+    i = 1;
+end
+
+if x2L > 0 
+    j = find((x/Lo) == x2L);
+else 
+    j = 1;
+end
+
+for n = 1:nplot
+DvDx(n) = (Mzo*x(n) - Vyo*((x(n)^2)/2) + (py0/2)*((x(n)^3)/3) + pyr*(x(n)^(rth+3))/((rth+1)*(rth+2)*(rth+3)*(Lo^rth)))/EIyy;
+DwDx(n) = -1*(Myo*x(n) + Vzo*((x(n)^2/2)) - pz0*((x(n)^3)/6) - (pz2/(Lo^2))*((x(n)^5)/60) - (pz4/(Lo^4))*((x(n)^7)/210) + (LF*rho*A*((x(n)^3)/6)))/EIzz;
+Twist(n) = (360/(2*pi))*(Mxo*(x(n)) - mx0*(x(n)^2)/2 - (mx1/Lo)*((x(n)^3)/6))/GJ;
+end
+
 for n = 1:nplot 
     if x(n) > 0 && (x(n)/Lo) <= x1L 
     DvDx(n) = (Mzo*x(n) - Vyo*((x(n)^2)/2) + (py0/2)*((x(n)^3)/3) + pyr*(x(n)^(rth+3))/((rth+1)*(rth+2)*(rth+3)*(Lo^rth)))/EIyy;
@@ -344,6 +361,12 @@ end
 Disp_X(1) = 0;
 Disp_Y(1) = 0;
 Disp_Z(1) = 0;
+
+for n = 1:nplot
+    Disp_X(n) = (Fx1*x(n))/(EA) + (Fx2*x(n))/(EA);
+    Disp_Y(n) = (Mzo*((x(n)^2)/2) - (Vyo/2)*((x(n)^3)/3) + (py0/6)*((x(n)^4)/4) + pyr*(x(n)^(rth+4))/((rth+1)*(rth+2)*(rth+3)*(rth+4)*(Lo^rth)))/EIyy;
+    Disp_Z(n) = -1*(Myo*((x(n)^2)/2) + Vzo*((x(n)^3/6)) - pz0*((x(n)^4)/24) - (pz2/(Lo^2))*((x(n)^6)/360) - (pz4/(Lo^4))*((x(n)^8)/1680) + (LF*rho*A*((x(n)^4)/24)))/EIzz;
+end
 
 for n = 1:nplot
     if x(n) > 0 && (x(n)/Lo) <= x1L
