@@ -266,10 +266,10 @@ for n = 1:nplot
     mx(n) = MX(x(n));
 end
 
-if x1L > x2L
-    x1L = x2L;
-    x2L = x1L;
-end
+% if x1L > x2L
+%     x1L = x2L;
+%     x2L = x1L;
+% end
 
 Vx(1) = Vxo;
 Vz(1) = Vzo;
@@ -321,29 +321,47 @@ for n = 1:nplot
 end
 
 if x1L > 0
-i = find((x/Lo) == x1L);
+    i = find((x/Lo) == x1L);
 else
-i = 1;
+    i = 1;
 end
 
-j = find((x/Lo) == x2L);
+if x2L > 0 
+    j = find((x/Lo) == x2L);
+elseif x2L == 0
+    x2L = 1;
+else
+    j = 1;
+end
+
+
+for n = 1:nplot
+DvDx(n) = (Mzo*x(n) - Vyo*((x(n)^2)/2) + (py0/2)*((x(n)^3)/3) + pyr*(x(n)^(rth+3))/((rth+1)*(rth+2)*(rth+3)*(Lo^rth)))/EIyy;
+DwDx(n) = -1*(Myo*x(n) + Vzo*((x(n)^2/2)) - pz0*((x(n)^3)/6) - (pz2/(Lo^2))*((x(n)^5)/60) - (pz4/(Lo^4))*((x(n)^7)/210) + (LF*rho*A*((x(n)^3)/6)))/EIzz;
+Twist(n) = (360/(2*pi))*(Mxo*(x(n)) - mx0*(x(n)^2)/2 - (mx1/Lo)*((x(n)^3)/6))/GJ;
+end
+
 for n = 1:nplot 
     if x(n) > 0 && (x(n)/Lo) <= x1L 
     DvDx(n) = (Mzo*x(n) - Vyo*((x(n)^2)/2) + (py0/2)*((x(n)^3)/3) + pyr*(x(n)^(rth+3))/((rth+1)*(rth+2)*(rth+3)*(Lo^rth)))/EIyy;
     DwDx(n) = -1*(Myo*x(n) + Vzo*((x(n)^2/2)) - pz0*((x(n)^3)/6) - (pz2/(Lo^2))*((x(n)^5)/60) - (pz4/(Lo^4))*((x(n)^7)/210) + (LF*rho*A*((x(n)^3)/6)))/EIzz;
     Twist(n) = (360/(2*pi))*(Mxo*(x(n)) - mx0*(x(n)^2)/2 - (mx1/Lo)*((x(n)^3)/6))/GJ;
-    elseif (x(n)/Lo) > x1L && (x(n)/Lo) <= x2L
-    DvDxConti = DvDx(i) - (Mzo*x(i) - Mz1*x(i) + Fy1*((x(i)^2)/2) - Fy1*(x1L*Lo)*(x(i)) - Vyo*((x(i)^2)/2) + (py0/2)*((x(i)^3)/3) + pyr*(x(i)^(rth+3))/((rth+1)*(rth+2)*(rth+3)*(Lo^rth)))/EIyy;
-    DwDxConti = DwDx(i) - (-1*(Myo*x(i) - My1*x(i) - Fz1*((x(i)^2)/2) + Fz1*(x1L*Lo)*(x(i)) + Vzo*((x(i)^2/2)) - pz0*((x(i)^3)/6) - (pz2/(Lo^2))*((x(i)^5)/60) - (pz4/(Lo^4))*((x(i)^7)/210) + (LF*rho*A*((x(i)^3)/6)))/EIzz);
+    elseif (x(n)/Lo) > x1L && (x(n)/Lo) <= x2L  %% need to fix this
+    DvDxConti = (Mzo*(x1L*Lo) - Vyo*(((x1L*Lo)^2)/2) + (py0/2)*(((x1L*Lo)^3)/3) + pyr*((x1L*Lo)^(rth+3))/((rth+1)*(rth+2)*(rth+3)*(Lo^rth)))/EIyy - (Mzo*(x1L*Lo) - Mz1*(x1L*Lo) + Fy1*(((x1L*Lo)^2)/2) - Fy1*(x1L*Lo)*(x1L*Lo) - Vyo*(((x1L*Lo)^2)/2) + (py0/2)*(((x1L*Lo)^3)/3) + pyr*((x1L*Lo)^(rth+3))/((rth+1)*(rth+2)*(rth+3)*(Lo^rth)))/EIyy;
+    DwDxConti = -1*(Myo*(x1L*Lo) + Vzo*(((x1L*Lo)^2/2)) - pz0*(((x1L*Lo)^3)/6) - (pz2/(Lo^2))*(((x1L*Lo)^5)/60) - (pz4/(Lo^4))*(((x1L*Lo)^7)/210) + (LF*rho*A*(((x1L*Lo)^3)/6)))/EIzz - (-1*(Myo*(x1L*Lo) - My1*(x1L*Lo) - Fz1*(((x1L*Lo)^2)/2) + Fz1*(x1L*Lo)*((x1L*Lo)) + Vzo*(((x1L*Lo)^2/2)) - pz0*(((x1L*Lo)^3)/6) - (pz2/(Lo^2))*(((x1L*Lo)^5)/60) - (pz4/(Lo^4))*(((x1L*Lo)^7)/210) + (LF*rho*A*(((x1L*Lo)^3)/6)))/EIzz);
+%     DvDxConti = DvDx(i) - (Mzo*x(i) - Mz1*x(i) + Fy1*((x(i)^2)/2) - Fy1*(x1L*Lo)*(x(i)) - Vyo*((x(i)^2)/2) + (py0/2)*((x(i)^3)/3) + pyr*(x(i)^(rth+3))/((rth+1)*(rth+2)*(rth+3)*(Lo^rth)))/EIyy;
+%     DwDxConti = DwDx(i) - (-1*(Myo*x(i) - My1*x(i) - Fz1*((x(i)^2)/2) + Fz1*(x1L*Lo)*(x(i)) + Vzo*((x(i)^2/2)) - pz0*((x(i)^3)/6) - (pz2/(Lo^2))*((x(i)^5)/60) - (pz4/(Lo^4))*((x(i)^7)/210) + (LF*rho*A*((x(i)^3)/6)))/EIzz);
     DvDx(n) = DvDxConti + (Mzo*x(n) - Mz1*x(n) + Fy1*((x(n)^2)/2) - Fy1*(x1L*Lo)*(x(n)) - Vyo*((x(n)^2)/2) + (py0/2)*((x(n)^3)/3) + pyr*(x(n)^(rth+3))/((rth+1)*(rth+2)*(rth+3)*(Lo^rth)))/EIyy;
     DwDx(n) = DwDxConti + (-1*(Myo*x(n) - My1*x(n) - Fz1*((x(n)^2)/2) + Fz1*(x1L*Lo)*(x(n)) + Vzo*((x(n)^2/2)) - pz0*((x(n)^3)/6) - (pz2/(Lo^2))*((x(n)^5)/60) - (pz4/(Lo^4))*((x(n)^7)/210) + (LF*rho*A*((x(n)^3)/6)))/EIzz);
-    Twist(n) = Twist(i) + (360/(2*pi))*(Mxo*(x(n)) - Mx1*(x(n)) - mx0*(x(n)^2)/2 - (mx1/Lo)*((x(n)^3)/6))/GJ - (360/(2*pi))*(Mxo*(x(i)) - Mx1*(x(i)) - mx0*(x(i)^2)/2 - (mx1/Lo)*((x(i)^3)/6))/GJ ;
-    elseif (x(n)/Lo) > x1L && (x(n)/Lo) > x2L
-    DvDxContj = DvDx(j) - (Mzo*x(j) - Mz1*x(j) - Mz2*x(j) + Fy1*((x(j)^2)/2) - Fy1*(x1L*Lo)*(x(j)) + Fy2*((x(j)^2)/2) - Fy2*(x2L*Lo)*(x(j)) - Vyo*((x(j)^2)/2) + (py0/2)*((x(j)^3)/3) + pyr*(x(j)^(rth+3))/((rth+1)*(rth+2)*(rth+3)*(Lo^rth)))/EIyy;
-    DwDxContj = DwDx(j) - (-1*(Myo*x(j) - My1*x(j) - My2*x(j) - Fz1*((x(j)^2)/2) + Fz1*(x1L*Lo)*(x(j)) - Fz2*((x(j)^2)/2) + Fz2*(x2L*Lo)*(x(j)) + Vzo*((x(j)^2/2)) - pz0*((x(j)^3)/6) - (pz2/(Lo^2))*((x(j)^5)/60) - (pz4/(Lo^4))*((x(j)^7)/210) + (LF*rho*A*((x(j)^3)/6)))/EIzz);
+    Twist(n) = (360/(2*pi))*(Mxo*(x1L*Lo) - mx0*((x1L*Lo)^2)/2 - (mx1/Lo)*(((x1L*Lo)^3)/6))/GJ + (360/(2*pi))*(Mxo*(x(n)) - Mx1*(x(n)) - mx0*(x(n)^2)/2 - (mx1/Lo)*((x(n)^3)/6))/GJ - (360/(2*pi))*(Mxo*((x1L*Lo)) - Mx1*((x1L*Lo)) - mx0*((x1L*Lo)^2)/2 - (mx1/Lo)*(((x1L*Lo)^3)/6))/GJ;
+    elseif (x(n)/Lo) > x1L && (x(n)/Lo) > x2L 
+    DvDxContj = DvDxConti + (Mzo*(x2L*Lo) - Mz1*(x2L*Lo) + Fy1*(((x2L*Lo)^2)/2) - Fy1*(x1L*Lo)*((x2L*Lo)) - Vyo*(((x2L*Lo)^2)/2) + (py0/2)*(((x2L*Lo)^3)/3) + pyr*((x2L*Lo)^(rth+3))/((rth+1)*(rth+2)*(rth+3)*(Lo^rth)))/EIyy - (Mzo*(x2L*Lo) - Mz1*(x2L*Lo) - Mz2*(x2L*Lo) + Fy1*(((x2L*Lo)^2)/2) - Fy1*(x1L*Lo)*((x2L*Lo)) + Fy2*(((x2L*Lo)^2)/2) - Fy2*(x2L*Lo)*((x2L*Lo)) - Vyo*(((x2L*Lo)^2)/2) + (py0/2)*(((x2L*Lo)^3)/3) + pyr*((x2L*Lo)^(rth+3))/((rth+1)*(rth+2)*(rth+3)*(Lo^rth)))/EIyy;
+    DwDxContj = DwDxConti + (-1*(Myo*(x2L*Lo) - My1*(x2L*Lo) - Fz1*(((x2L*Lo)^2)/2) + Fz1*(x1L*Lo)*((x2L*Lo)) + Vzo*(((x2L*Lo)^2/2)) - pz0*(((x2L*Lo)^3)/6) - (pz2/(Lo^2))*(((x2L*Lo)^5)/60) - (pz4/(Lo^4))*(((x2L*Lo)^7)/210) + (LF*rho*A*(((x2L*Lo)^3)/6)))/EIzz) - (-1*(Myo*(x2L*Lo) - My1*(x2L*Lo) - My2*(x2L*Lo) - Fz1*(((x2L*Lo)^2)/2) + Fz1*(x1L*Lo)*((x2L*Lo)) - Fz2*(((x2L*Lo)^2)/2) + Fz2*(x2L*Lo)*((x2L*Lo)) + Vzo*(((x2L*Lo)^2/2)) - pz0*(((x2L*Lo)^3)/6) - (pz2/(Lo^2))*(((x2L*Lo)^5)/60) - (pz4/(Lo^4))*(((x2L*Lo)^7)/210) + (LF*rho*A*(((x2L*Lo)^3)/6)))/EIzz);
+%     DvDxContj = DvDx(j) - (Mzo*x(j) - Mz1*x(j) - Mz2*x(j) + Fy1*((x(j)^2)/2) - Fy1*(x1L*Lo)*(x(j)) + Fy2*((x(j)^2)/2) - Fy2*(x2L*Lo)*(x(j)) - Vyo*((x(j)^2)/2) + (py0/2)*((x(j)^3)/3) + pyr*(x(j)^(rth+3))/((rth+1)*(rth+2)*(rth+3)*(Lo^rth)))/EIyy;
+%     DwDxContj = DwDx(j) - (-1*(Myo*x(j) - My1*x(j) - My2*x(j) - Fz1*((x(j)^2)/2) + Fz1*(x1L*Lo)*(x(j)) - Fz2*((x(j)^2)/2) + Fz2*(x2L*Lo)*(x(j)) + Vzo*((x(j)^2/2)) - pz0*((x(j)^3)/6) - (pz2/(Lo^2))*((x(j)^5)/60) - (pz4/(Lo^4))*((x(j)^7)/210) + (LF*rho*A*((x(j)^3)/6)))/EIzz);
     DvDx(n) = DvDxContj + (Mzo*x(n) - Mz1*x(n) - Mz2*x(n) + Fy1*((x(n)^2)/2) - Fy1*(x1L*Lo)*(x(n)) + Fy2*((x(n)^2)/2) - Fy2*(x2L*Lo)*(x(n)) - Vyo*((x(n)^2)/2) + (py0/2)*((x(n)^3)/3) + pyr*(x(n)^(rth+3))/((rth+1)*(rth+2)*(rth+3)*(Lo^rth)))/EIyy;
     DwDx(n) = DwDxContj + (-1*(Myo*x(n) - My1*x(n) - My2*x(n) - Fz1*((x(n)^2)/2) + Fz1*(x1L*Lo)*(x(n)) - Fz2*((x(n)^2)/2) + Fz2*(x2L*Lo)*(x(n)) + Vzo*((x(n)^2/2)) - pz0*((x(n)^3)/6) - (pz2/(Lo^2))*((x(n)^5)/60) - (pz4/(Lo^4))*((x(n)^7)/210) + (LF*rho*A*((x(n)^3)/6)))/EIzz);
-    Twist(n) = Twist(j) + (360/(2*pi))*(Mxo*(x(n)) - Mx1*(x(n)) - Mx2*(x(n)) - mx0*(x(n)^2)/2 - (mx1/Lo)*((x(n)^3)/6))/GJ - (360/(2*pi))*(Mxo*(x(j)) - Mx1*(x(j)) - Mx2*(x(j)) - mx0*(x(j)^2)/2 - (mx1/Lo)*((x(j)^3)/6))/GJ;
+    Twist(n) = (360/(2*pi))*(Mxo*(x1L*Lo) - mx0*((x1L*Lo)^2)/2 - (mx1/Lo)*(((x1L*Lo)^3)/6))/GJ + (360/(2*pi))*(Mxo*((x2L*Lo)) - Mx1*((x2L*Lo)) - mx0*((x2L*Lo)^2)/2 - (mx1/Lo)*(((x2L*Lo)^3)/6))/GJ - (360/(2*pi))*(Mxo*((x1L*Lo)) - Mx1*((x1L*Lo)) - mx0*((x1L*Lo)^2)/2 - (mx1/Lo)*(((x1L*Lo)^3)/6))/GJ + (360/(2*pi))*(Mxo*(x(n)) - Mx1*(x(n)) - Mx2*(x(n)) - mx0*(x(n)^2)/2 - (mx1/Lo)*((x(n)^3)/6))/GJ - (360/(2*pi))*(Mxo*((x2L*Lo)) - Mx1*((x2L*Lo)) - Mx2*((x2L*Lo)) - mx0*((x2L*Lo)^2)/2 - (mx1/Lo)*(((x2L*Lo)^3)/6))/GJ;
     end
 end
 
@@ -352,18 +370,28 @@ Disp_Y(1) = 0;
 Disp_Z(1) = 0;
 
 for n = 1:nplot
+    Disp_X(n) = (Fx1*x(n))/(EA) + (Fx2*x(n))/(EA);
+    Disp_Y(n) = (Mzo*((x(n)^2)/2) - (Vyo/2)*((x(n)^3)/3) + (py0/6)*((x(n)^4)/4) + pyr*(x(n)^(rth+4))/((rth+1)*(rth+2)*(rth+3)*(rth+4)*(Lo^rth)))/EIyy;
+    Disp_Z(n) = -1*(Myo*((x(n)^2)/2) + Vzo*((x(n)^3/6)) - pz0*((x(n)^4)/24) - (pz2/(Lo^2))*((x(n)^6)/360) - (pz4/(Lo^4))*((x(n)^8)/1680) + (LF*rho*A*((x(n)^4)/24)))/EIzz;
+end
+
+for n = 1:nplot
     if x(n) > 0 && (x(n)/Lo) <= x1L
     Disp_X(n) = (Fx1*x(n))/(EA) + (Fx2*x(n))/(EA);
     Disp_Y(n) = (Mzo*((x(n)^2)/2) - (Vyo/2)*((x(n)^3)/3) + (py0/6)*((x(n)^4)/4) + pyr*(x(n)^(rth+4))/((rth+1)*(rth+2)*(rth+3)*(rth+4)*(Lo^rth)))/EIyy;
     Disp_Z(n) = -1*(Myo*((x(n)^2)/2) + Vzo*((x(n)^3/6)) - pz0*((x(n)^4)/24) - (pz2/(Lo^2))*((x(n)^6)/360) - (pz4/(Lo^4))*((x(n)^8)/1680) + (LF*rho*A*((x(n)^4)/24)))/EIzz;
     elseif (x(n)/Lo) > x1L && (x(n)/Lo) <= x2L
-    Disp_X(n) = Disp_X(i) + (Fx2*x(n))/(EA) - (Fx2*x(i))/(EA);
-    Disp_Y(n) = Disp_Y(i) + DvDxConti*x(n) - DvDxConti*x(i) + ((Mzo*((x(n)^2)/2) - Mz1*((x(n)^2)/2) + Fy1*((x(n)^3)/6) - Fy1*(x1L*Lo)*((x(n)^2)/2) - (Vyo/2)*((x(n)^3)/3) + (py0/6)*((x(n)^4)/4) + pyr*(x(n)^(rth+4))/((rth+1)*(rth+2)*(rth+3)*(rth+4)*(Lo^rth)))/EIyy) - ((Mzo*((x(i)^2)/2) - Mz1*((x(i)^2)/2) + Fy1*((x(i)^3)/6) - Fy1*(x1L*Lo)*((x(i)^2)/2) - (Vyo/2)*((x(i)^3)/3) + (py0/6)*((x(i)^4)/4) + pyr*(x(i)^(rth+4))/((rth+1)*(rth+2)*(rth+3)*(rth+4)*(Lo^rth)))/EIyy);
-    Disp_Z(n) = Disp_Z(i) + DwDxConti*x(n) - DwDxConti*x(i) + (-1*(Myo*((x(n)^2)/2) - My1*((x(n)^2)/2) - Fz1*((x(n)^3)/6) + Fz1*(x1L*Lo)*((x(n)^2)/2) + Vzo*((x(n)^3)/6) - pz0*((x(n)^4)/24) - (pz2/(Lo^2))*((x(n)^6)/360) - (pz4/(Lo^4))*((x(n)^8)/1680) + (LF*rho*A*((x(n)^4)/24)))/EIzz) - (-1*(Myo*((x(i)^2)/2) - My1*((x(i)^2)/2) - Fz1*((x(i)^3)/6) + Fz1*(x1L*Lo)*((x(i)^2)/2) + Vzo*((x(i)^3/6)) - pz0*((x(i)^4)/24) - (pz2/(Lo^2))*((x(i)^6)/360) - (pz4/(Lo^4))*((x(i)^8)/1680) + (LF*rho*A*((x(i)^4)/24)))/EIzz);
+    Yconti = (Mzo*(((x1L*Lo)^2)/2) - (Vyo/2)*(((x1L*Lo)^3)/3) + (py0/6)*(((x1L*Lo)^4)/4) + pyr*((x1L*Lo)^(rth+4))/((rth+1)*(rth+2)*(rth+3)*(rth+4)*(Lo^rth)))/EIyy;
+    Zconti = -1*(Myo*(((x1L*Lo)^2)/2) + Vzo*(((x1L*Lo)^3/6)) - pz0*(((x1L*Lo)^4)/24) - (pz2/(Lo^2))*(((x1L*Lo)^6)/360) - (pz4/(Lo^4))*(((x1L*Lo)^8)/1680) + (LF*rho*A*(((x1L*Lo)^4)/24)))/EIzz;
+    Disp_X(n) = (Fx1*(x1L*Lo))/(EA) + (Fx2*(x1L*Lo))/(EA) + (Fx2*x(n))/(EA) - (Fx2*(x1L*Lo))/(EA);
+    Disp_Y(n) = Yconti + DvDxConti*x(n) - DvDxConti*(x1L*Lo) + ((Mzo*((x(n)^2)/2) - Mz1*((x(n)^2)/2) + Fy1*((x(n)^3)/6) - Fy1*(x1L*Lo)*((x(n)^2)/2) - (Vyo/2)*((x(n)^3)/3) + (py0/6)*((x(n)^4)/4) + pyr*(x(n)^(rth+4))/((rth+1)*(rth+2)*(rth+3)*(rth+4)*(Lo^rth)))/EIyy) - ((Mzo*(((x1L*Lo)^2)/2) - Mz1*(((x1L*Lo)^2)/2) + Fy1*(((x1L*Lo)^3)/6) - Fy1*(x1L*Lo)*(((x1L*Lo)^2)/2) - (Vyo/2)*(((x1L*Lo)^3)/3) + (py0/6)*(((x1L*Lo)^4)/4) + pyr*((x1L*Lo)^(rth+4))/((rth+1)*(rth+2)*(rth+3)*(rth+4)*(Lo^rth)))/EIyy);
+    Disp_Z(n) = Zconti + DwDxConti*x(n) - DwDxConti*(x1L*Lo) + (-1*(Myo*((x(n)^2)/2) - My1*((x(n)^2)/2) - Fz1*((x(n)^3)/6) + Fz1*(x1L*Lo)*((x(n)^2)/2) + Vzo*((x(n)^3)/6) - pz0*((x(n)^4)/24) - (pz2/(Lo^2))*((x(n)^6)/360) - (pz4/(Lo^4))*((x(n)^8)/1680) + (LF*rho*A*((x(n)^4)/24)))/EIzz) - (-1*(Myo*(((x1L*Lo)^2)/2) - My1*(((x1L*Lo)^2)/2) - Fz1*(((x1L*Lo)^3)/6) + Fz1*(x1L*Lo)*(((x1L*Lo)^2)/2) + Vzo*(((x1L*Lo)^3/6)) - pz0*(((x1L*Lo)^4)/24) - (pz2/(Lo^2))*(((x1L*Lo)^6)/360) - (pz4/(Lo^4))*(((x1L*Lo)^8)/1680) + (LF*rho*A*(((x1L*Lo)^4)/24)))/EIzz);
     elseif (x(n)/Lo) > x1L && (x(n)/Lo) > x2L
-    Disp_X(n) = Disp_X(n-1);
-    Disp_Y(n) = Disp_Y(j) + DvDxContj*x(n) - DvDxContj*x(j) + ((Mzo*((x(n)^2)/2) - Mz1*((x(n)^2)/2)  - Mz2*((x(n)^2)/2) + Fy1*((x(n)^3)/6) - Fy1*(x1L*Lo)*((x(n)^2)/2) + Fy2*((x(n)^3)/6) - Fy2*(x2L*Lo)*((x(n)^2)/2) - (Vyo/2)*((x(n)^3)/3) + (py0/6)*((x(n)^4)/4) + pyr*(x(n)^(rth+4))/((rth+1)*(rth+2)*(rth+3)*(rth+4)*(Lo^rth)))/EIyy) - ((Mzo*((x(j)^2)/2) - Mz1*((x(j)^2)/2)  - Mz2*((x(j)^2)/2) + Fy1*((x(j)^3)/6) - Fy1*(x1L*Lo)*((x(j)^2)/2) + Fy2*((x(j)^3)/6) - Fy2*(x2L*Lo)*((x(j)^2)/2) - (Vyo/2)*((x(j)^3)/3) + (py0/6)*((x(j)^4)/4) + pyr*(x(j)^(rth+4))/((rth+1)*(rth+2)*(rth+3)*(rth+4)*(Lo^rth)))/EIyy);
-    Disp_Z(n) = Disp_Z(j) + DwDxContj*x(n) - DwDxContj*x(j) + (-1*(Myo*((x(n)^2)/2) - My1*((x(n)^2)/2) - My2*((x(n)^2)/2) - Fz1*((x(n)^3)/6) + Fz1*(x1L*Lo)*((x(n)^2)/2) - Fz2*((x(n)^3)/6) + Fz2*(x2L*Lo)*((x(n)^2)/2) + Vzo*((x(n)^3)/6) - pz0*((x(n)^4)/24) - (pz2/(Lo^2))*((x(n)^6)/360) - (pz4/(Lo^4))*((x(n)^8)/1680) + (LF*rho*A*((x(n)^4)/24)))/EIzz) - (-1*(Myo*((x(j)^2)/2) - My1*((x(j)^2)/2) - My2*((x(j)^2)/2) - Fz1*((x(j)^3)/6) + Fz1*(x1L*Lo)*((x(j)^2)/2) - Fz2*((x(j)^3)/6) + Fz2*(x2L*Lo)*((x(j)^2)/2) + Vzo*((x(j)^3/6)) - pz0*((x(j)^4)/24) - (pz2/(Lo^2))*((x(j)^6)/360) - (pz4/(Lo^4))*((x(j)^8)/1680) + (LF*rho*A*((x(j)^4)/24)))/EIzz);
+    Ycontj = Yconti + DvDxConti*(x2L*Lo) - DvDxConti*(x1L*Lo) + ((Mzo*(((x2L*Lo)^2)/2) - Mz1*(((x2L*Lo)^2)/2) + Fy1*(((x2L*Lo)^3)/6) - Fy1*(x1L*Lo)*(((x2L*Lo)^2)/2) - (Vyo/2)*(((x2L*Lo)^3)/3) + (py0/6)*(((x2L*Lo)^4)/4) + pyr*((x2L*Lo)^(rth+4))/((rth+1)*(rth+2)*(rth+3)*(rth+4)*(Lo^rth)))/EIyy) - ((Mzo*(((x1L*Lo)^2)/2) - Mz1*(((x1L*Lo)^2)/2) + Fy1*(((x1L*Lo)^3)/6) - Fy1*(x1L*Lo)*(((x1L*Lo)^2)/2) - (Vyo/2)*(((x1L*Lo)^3)/3) + (py0/6)*(((x1L*Lo)^4)/4) + pyr*((x1L*Lo)^(rth+4))/((rth+1)*(rth+2)*(rth+3)*(rth+4)*(Lo^rth)))/EIyy);
+    Zcontj = Zconti + DwDxConti*(x2L*Lo) - DwDxConti*(x1L*Lo) + (-1*(Myo*(((x2L*Lo)^2)/2) - My1*(((x2L*Lo)^2)/2) - Fz1*(((x2L*Lo)^3)/6) + Fz1*(x1L*Lo)*(((x2L*Lo)^2)/2) + Vzo*(((x2L*Lo)^3)/6) - pz0*(((x2L*Lo)^4)/24) - (pz2/(Lo^2))*(((x2L*Lo)^6)/360) - (pz4/(Lo^4))*(((x2L*Lo)^8)/1680) + (LF*rho*A*(((x2L*Lo)^4)/24)))/EIzz) - (-1*(Myo*(((x1L*Lo)^2)/2) - My1*(((x1L*Lo)^2)/2) - Fz1*(((x1L*Lo)^3)/6) + Fz1*(x1L*Lo)*(((x1L*Lo)^2)/2) + Vzo*(((x1L*Lo)^3/6)) - pz0*(((x1L*Lo)^4)/24) - (pz2/(Lo^2))*(((x1L*Lo)^6)/360) - (pz4/(Lo^4))*(((x1L*Lo)^8)/1680) + (LF*rho*A*(((x1L*Lo)^4)/24)))/EIzz);
+    Disp_X(n) = Disp_X(n-1) + (Fx2*x(n))/(EA);
+    Disp_Y(n) = Ycontj + DvDxContj*x(n) - DvDxContj*(x2L*Lo) + ((Mzo*((x(n)^2)/2) - Mz1*((x(n)^2)/2)  - Mz2*((x(n)^2)/2) + Fy1*((x(n)^3)/6) - Fy1*(x1L*Lo)*((x(n)^2)/2) + Fy2*((x(n)^3)/6) - Fy2*(x2L*Lo)*((x(n)^2)/2) - (Vyo/2)*((x(n)^3)/3) + (py0/6)*((x(n)^4)/4) + pyr*(x(n)^(rth+4))/((rth+1)*(rth+2)*(rth+3)*(rth+4)*(Lo^rth)))/EIyy) - ((Mzo*(((x2L*Lo)^2)/2) - Mz1*(((x2L*Lo)^2)/2)  - Mz2*(((x2L*Lo)^2)/2) + Fy1*(((x2L*Lo)^3)/6) - Fy1*(x1L*Lo)*(((x2L*Lo)^2)/2) + Fy2*(((x2L*Lo)^3)/6) - Fy2*(x2L*Lo)*(((x2L*Lo)^2)/2) - (Vyo/2)*(((x2L*Lo)^3)/3) + (py0/6)*(((x2L*Lo)^4)/4) + pyr*((x2L*Lo)^(rth+4))/((rth+1)*(rth+2)*(rth+3)*(rth+4)*(Lo^rth)))/EIyy);
+    Disp_Z(n) = Zcontj + DwDxContj*x(n) - DwDxContj*(x2L*Lo) + (-1*(Myo*((x(n)^2)/2) - My1*((x(n)^2)/2) - My2*((x(n)^2)/2) - Fz1*((x(n)^3)/6) + Fz1*(x1L*Lo)*((x(n)^2)/2) - Fz2*((x(n)^3)/6) + Fz2*(x2L*Lo)*((x(n)^2)/2) + Vzo*((x(n)^3)/6) - pz0*((x(n)^4)/24) - (pz2/(Lo^2))*((x(n)^6)/360) - (pz4/(Lo^4))*((x(n)^8)/1680) + (LF*rho*A*((x(n)^4)/24)))/EIzz) - (-1*(Myo*(((x2L*Lo)^2)/2) - My1*(((x2L*Lo)^2)/2) - My2*(((x2L*Lo)^2)/2) - Fz1*(((x2L*Lo)^3)/6) + Fz1*(x1L*Lo)*(((x2L*Lo)^2)/2) - Fz2*(((x2L*Lo)^3)/6) + Fz2*(x2L*Lo)*(((x2L*Lo)^2)/2) + Vzo*(((x2L*Lo)^3/6)) - pz0*(((x2L*Lo)^4)/24) - (pz2/(Lo^2))*(((x2L*Lo)^6)/360) - (pz4/(Lo^4))*(((x2L*Lo)^8)/1680) + (LF*rho*A*(((x2L*Lo)^4)/24)))/EIzz);
     end
 end
 
