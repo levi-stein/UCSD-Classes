@@ -1,0 +1,3 @@
+close all; clear; clc;
+y = @(t) sin(pi*t);
+t = linspace(0,5,((5/.001)+1));
