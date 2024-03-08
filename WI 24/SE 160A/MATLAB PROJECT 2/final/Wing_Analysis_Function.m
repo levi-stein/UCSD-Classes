@@ -341,18 +341,29 @@ MS_str4T = (S_allow_T_str4/abs(Sxxo_str4)) - 1;
 MS_str4C = (abs(S_allow_C_str4)/abs(Sxxo_str4)) - 1;
 MS_str4 = min(MS_str4T, MS_str4C);
 
-A12 = (1/4)*(Co/4)*(tmax/2) + (1/2)*(yo_str2 - (Co/4))*(tmax/2);
+A12 = (1/4)*pi*(Co/4)*(tmax/2) + (1/2)*(yo_str2 - (Co/4))*(tmax/2);
 A23 = (AreaEnclosed/2) - A12;
-A41 = (1/4)*(Co/4)*(tmax/2) + (1/2)*(yo_str4 - (Co/4))*(tmax/2);
+A41 = (1/4)*pi*(Co/4)*(tmax/2) + (1/2)*(yo_str4 - (Co/4))*(tmax/2);
 A34 = (AreaEnclosed/2) - A41;
 
-strMAT = 
+% q12 = Mxo/(2*A12);
+% q23 = Mxo/(2*A23);
+% q34 = Mxo/(2*A34);
+% q41 = Mxo/(2*A41);
 
+delta = yc - Co/4;
 
+strMAT = [1 -1 0 0; 0 1 -1 0; 0 0 1 -1; 2*A12 2*A23 2*A34 2*A41];
+Mxmat = [0; 0; 0; 1];
+Vymat = [((Eo_str2*(10^6)*A_str2*yc_str2)/EIzz);((Eo_str3*(10^6)*A_str3*yc_str3)/EIzz);((Eo_str4*(10^6)*A_str4*yc_str4)/EIzz); 0];
+Vzmat = [((Eo_str2*(10^6)*A_str2*zc_str2)/EIyy);((Eo_str3*(10^6)*A_str3*zc_str3)/EIyy);((Eo_str4*(10^6)*A_str4*zc_str4)/EIyy); delta];
 
+[q] = inv(strMAT)*(Mxo*(Mxmat) + Vyo*(Vymat) + Vzo*(Vzmat));
 
-
-
+Tau_o_sk12 = (10^-3)*q(1)/to_sk;
+Tau_o_sk23 = (10^-3)*q(2)/to_sk;
+Tau_o_sk34 = (10^-3)*q(3)/to_sk;
+Tau_o_sk41 = (10^-3)*q(4)/to_sk;
 
 Tau_allow_S_sk12 = min([(Sys_sk/SFy) (Sus_sk/SFu)]);
 
