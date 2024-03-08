@@ -341,12 +341,12 @@ MS_str4T = (S_allow_T_str4/abs(Sxxo_str4)) - 1;
 MS_str4C = (abs(S_allow_C_str4)/abs(Sxxo_str4)) - 1;
 MS_str4 = min(MS_str4T, MS_str4C);
 
-A12 = (1/4)*(Co/4)*(tmax/2) + (yo_str2 - (Co/4))*(tmax/2);
-A23 = (Co/2 - yo_str2)*(tmax/2) + (1/2)*(Co/2)*(tmax/2);
-A34 = (Co/2 - yo_str4)*(tmax/2) + (1/2)*(Co/2)*(tmax/2);
-A41 = (1/4)*(Co/4)*(tmax/2) + (yo_str4 - (Co/4))*(tmax/2);
+A12 = (1/4)*(Co/4)*(tmax/2) + (1/2)*(yo_str2 - (Co/4))*(tmax/2);
+A23 = (AreaEnclosed/2) - A12;
+A41 = (1/4)*(Co/4)*(tmax/2) + (1/2)*(yo_str4 - (Co/4))*(tmax/2);
+A34 = (AreaEnclosed/2) - A41;
 
-str
+strMAT = 
 
 
 
