@@ -9,16 +9,14 @@ t = linspace(int(1),int(end),((int(end)/deltat)+1));
 plot(t,y(t),'r-');
 hold on;
 % h = 0.1;
-tk = int(1):h:int(end);
+tk = linspace(int(1),int(end),((int(end)/h)+1));
 plot(tk,y(tk),'kx');
-k = 2;
+k = 0;
 for n = 1:length(t)
     if k*h <= t(n) && t(n) > (k + 1)*h
         k = k + 1;
     end
-    y_soh(n)= y((k-2)*h)*((t(n) - h*(k-1))*(t(n) - h*k))/((h*(k-2) - h*(k-1))*(h*(k-2) - h*k))...
-        + y((k-1)*h)*((t(n) - h*(k-2))*(t(n) - h*k))/((h*(k-1) - h*(k-2))*(h*(k-1) - h*k))...
-        + y(k*h)*((t(n) - h*(k-2))*(t(n) - h*(k-1)))/((h*(k) - h*(k-2))*(h*(k) - h*(k-1))); 
+    y_soh(n)= y((k-2)*h)*((t(n) - h*(k-1))*(t(n) - h*k))/((h*(k-2) - h*(k-1))*(h*(k-2) - h*k)) + y((k-1)*h)*((t(n) - h*(k-2))*(t(n) - h*k))/((h*(k-1) - h*(k-2))*(h*(k-1) - h*k)) + y(k*h)*((t(n) - h*(k-1))*(t(n) - h*k))/((h*(k-2) - h*(k-1))*(h*(k-2) - h*k)); 
 end
 plot(t,y_soh,'b-');
 title('Second Order Hold of a Sinewave');

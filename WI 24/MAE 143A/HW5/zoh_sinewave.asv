@@ -9,7 +9,7 @@ t = linspace(int(1),int(end),((int(end)/deltat)+1));
 plot(t,y(t),'r-');
 hold on;
 % h = 0.1;
-tk = int(1):h:int(end);
+tk = linspace(int(1),int(end),((int(end)/h)+1));
 plot(tk,y(tk),'kx');
 k = 0;
 for n = 1:length(t)

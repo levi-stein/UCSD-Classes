@@ -287,8 +287,9 @@ rhoA = (skinA*rho_sk + rho_str1*A_str1 + rho_str2*A_str2 + rho_str3*A_str3 + rho
 EIyy = (10^6)*((Eo_str1*Iyy_str1 + (Eo_str1*(zc_str1^2)*A_str1)) + (Eo_str2*Iyy_str2 + (Eo_str2*((zc_str2)^2)*A_str2)) + (Eo_str3*Iyy_str3 + (Eo_str3*(zc_str3^2)*A_str3)) + (Eo_str4*Iyy_str4 + (Eo_str4*(zc_str4)^2*A_str4)));
 EIzz = (10^6)*((Eo_str1*Izz_str1 + (Eo_str1*(yc_str1^2)*A_str1)) + (Eo_str2*Izz_str2 + (Eo_str2*((yc_str2)^2)*A_str2)) + (Eo_str3*Izz_str3 + (Eo_str3*((yc_str3)^2)*A_str3)) + (Eo_str4*Izz_str4 + (Eo_str4*((yc_str4)^2)*A_str4)));
 EIyz = (10^6)*((Eo_str1*Iyz_str1 + (Eo_str1*(yc_str1*zc_str1)*A_str1)) + (Eo_str2*Iyz_str2 + (Eo_str2*(yc_str2*zc_str2)*A_str2)) + (Eo_str3*Iyz_str3 + (Eo_str3*(yc_str3*zc_str3)*A_str3)) + (Eo_str4*Iyz_str4 + (Eo_str4*(yc_str4*zc_str4)*A_str4)));
+AreaEnclosed = (pi/2)*(Co/4)*(tmax/2) + (Co/4)*(tmax) + (Co/2)*(tmax/2);
 S = (C/2) + 2*(Co/4) + 2*sqrt((Co/2)^2 + (tmax/2)^2);
-% GJ = Go_sk*((Iyy_str1 + (zc_str1^2)*A_str1) + (Iyy_str2 + (zc_str2^2)*A_str2) + (Iyy_str3 + (zc_str3^2)*A_str3) + (Iyy_str4 + (zc_str4^2)*A_str4) + (Izz_str1 + (yc_str1^2)*A_str1) + (Izz_str2 + (yc_str2^2)*A_str2) + (Izz_str3 + (yc_str3^2)*A_str3) + (Izz_str4 + (yc_str4^2)*A_str4));
+GJ = (10^6)*(Go_sk*(4*AreaEnclosed^2)*to_sk)/S;
 % . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 % .  SECTION (#3): Calculate Root Internal Stress Resultants for Applied
 % .                Concentrated Forces and Applied Aerodynamic Loads
@@ -310,35 +311,51 @@ Mzo = DM;
    disp('     (4) Calculate Allowable Properties, Root Stresses, and Margins of Safety')
 Smat = [EA 0 0; 0 EIzz EIyz; 0 EIyz EIyy];
 Snew = inv(Smat);
-Pmat = [Vxo; Mzo; Myo];
+Pmat = [Vxo; Mzo; -Myo];
 
-Sxx_str1 = (10^3)*Eo_str1*[1 -(yc_str1) -(zc_str1)]*Snew*Pmat;
+Sxxo_str1 = (10^3)*Eo_str1*[1 -(yc_str1) -(zc_str1)]*Snew*Pmat;
 S_allow_T_str1 = min([(Syt_str1/SFy) (Sut_str1/SFu)]);
 S_allow_C_str1 = min([(Syc_str1/SFy) (Suc_str1/SFu)]);
-MS_str1T = (S_allow_T_str1/abs(Sxx_str1)) - 1;
-MS_str1C = (abs(S_allow_C_str1)/abs(Sxx_str1)) - 1;
+MS_str1T = (S_allow_T_str1/abs(Sxxo_str1)) - 1;
+MS_str1C = (abs(S_allow_C_str1)/abs(Sxxo_str1)) - 1;
 MS_str1 = min(MS_str1T, MS_str1C);
 
-Sxx_str2 = (10^3)*Eo_str2*[1 -(yc_str2) (zc_str2)]*Snew*Pmat;
+Sxxo_str2 = (10^3)*Eo_str2*[1 -(yc_str2) -(zc_str2)]*Snew*Pmat;
 S_allow_T_str2 = min([(Syt_str2/SFy) (Sut_str2/SFu)]);
 S_allow_C_str2 = min([(Syc_str2/SFy) (Suc_str2/SFu)]);
-MS_str2T = (S_allow_T_str2/abs(Sxx_str2)) - 1;
-MS_str2C = (abs(S_allow_C_str2)/abs(Sxx_str2)) - 1;
+MS_str2T = (S_allow_T_str2/abs(Sxxo_str2)) - 1;
+MS_str2C = (abs(S_allow_C_str2)/abs(Sxxo_str2)) - 1;
 MS_str2 = min(MS_str2T, MS_str2C);
 
-Sxx_str3 = (10^3)*Eo_str3*[1 -(yc_str3) -(zc_str3)]*Snew*Pmat;
+Sxxo_str3 = (10^3)*Eo_str3*[1 -(yc_str3) -(zc_str3)]*Snew*Pmat;
 S_allow_T_str3 = min([(Syt_str3/SFy) (Sut_str3/SFu)]);
 S_allow_C_str3 = min([(Syc_str3/SFy) (Suc_str3/SFu)]);
-MS_str3T = (S_allow_T_str3/abs(Sxx_str3)) - 1;
-MS_str3C = (abs(S_allow_C_str3)/abs(Sxx_str3)) - 1;
+MS_str3T = (S_allow_T_str3/abs(Sxxo_str3)) - 1;
+MS_str3C = (abs(S_allow_C_str3)/abs(Sxxo_str3)) - 1;
 MS_str3 = min(MS_str3T, MS_str3C);
 
-Sxx_str4 = (10^3)*Eo_str4*[1 -(yc_str4) (zc_str4)]*Snew*Pmat;
+Sxxo_str4 = (10^3)*Eo_str4*[1 -(yc_str4) -(zc_str4)]*Snew*Pmat;
 S_allow_T_str4 = min([(Syt_str4/SFy) (Sut_str4/SFu)]);
 S_allow_C_str4 = min([(Syc_str4/SFy) (Suc_str4/SFu)]);
-MS_str4T = (S_allow_T_str4/abs(Sxx_str4)) - 1;
-MS_str4C = (abs(S_allow_C_str4)/abs(Sxx_str4)) - 1;
+MS_str4T = (S_allow_T_str4/abs(Sxxo_str4)) - 1;
+MS_str4C = (abs(S_allow_C_str4)/abs(Sxxo_str4)) - 1;
 MS_str4 = min(MS_str4T, MS_str4C);
+
+A12 = (1/4)*(Co/4)*(tmax/2) + (yo_str2 - (Co/4))*(tmax/2);
+A23 = (Co/2 - yo_str2)*(tmax/2) + (1/2)*(Co/2)*(tmax/2);
+A34 = (Co/2 - yo_str4)*(tmax/2) + (1/2)*(Co/2)*(tmax/2);
+
+
+
+
+
+
+
+
+
+
+
+
 
 Tau_allow_S_sk12 = min([(Sys_sk/SFy) (Sus_sk/SFu)]);
 
@@ -360,12 +377,27 @@ MX = @(x) mx0 + mx1*(x/Lo);
 
 for n = 1:nplot
     py(n) = PY(x(n));
-    pz(n) = PZ(x(n)) - LF*(W_wing/Lo);
+    pz(n) = PZ(x(n)) - LF*(W_wing/Lo)*(x(n));
     mx(n) = MX(x(n));
 end
 
+Vx(1) = Vxo;
+Vz(1) = Vzo;
+Vy(1) = Vyo;
+for n = 1:nplot 
+    Vx(n) = Vxo;
+    Vy(n) = Vyo - py0*x(n) - (pyr/(rth+1))*((x(n)^(rth+1))/(Lo^rth)); 
+    Vz(n) = Vzo - pz0*(x(n)) - (pz2)*((x(n)^3)/(3*Lo^2)) - (pz4)*((x(n)^5)/(5*Lo^4)) + (LF*rhoA*Lo*(x(n)/Lo));
+end
 
-
+Mx(1) = Mxo;
+My(1) = Myo;
+Mz(1) = Mzo;
+for n = 1:nplot 
+    Mx(n) = Mxo - mx0*(x(n)) - (mx1/Lo)*((x(n)^2)/2) - ((Co/4) - yc)*(pz0*(x(n)) + (pz2)*((x(n)^3)/(3*Lo^2)) + (pz4)*((x(n)^5)/(5*Lo^4))) - (yc - (Co/2))*(LF*(W_wing/Lo)*x(n)) - (zc)*(py0*x(n) + (pyr/(rth+1))*((x(n)^(rth+1))/(Lo^rth)));
+    My(n) = Myo + Vzo*x(n) - pz0*((x(n)^2)/2) - (pz2/(Lo^2))*((x(n)^4)/12) - (pz4/(Lo^4))*((x(n)^6)/30) + (LF*rhoA*((x(n)^2)/2));
+    Mz(n) = Mzo - Vyo*(x(n)) + py0*(x(n)^2)/2 + pyr*(x(n)^(rth+2))/((rth+1)*(rth+2)*(Lo^rth));
+end
 
 
 
@@ -393,19 +425,19 @@ end
      dataOut1(15) = Mxo;              % Root Internal Moment - about X Direction (lb-in)
      dataOut1(16) = Myo;              % Root Internal Moment - about Y Direction (lb-in)
      dataOut1(17) = Mzo;              % Root Internal Moment - about Z Direction (lb-in)
-     dataOut1(18) = Sxx_str1;         % Stringer (#1) Calculated Axial Stress (lb/in^2)
+     dataOut1(18) = Sxxo_str1;         % Stringer (#1) Calculated Axial Stress (lb/in^2)
      dataOut1(19) = S_allow_T_str1;   % Stringer (#1) Allowable Stress - Tension (lb/in^2)
      dataOut1(20) = S_allow_C_str1;   % Stringer (#1) Allowable Stress - Compression (lb/in^2)
      dataOut1(21) = MS_str1;          % Stringer (#1) Margin of Safety
-     dataOut1(22) = Sxx_str2;         % Stringer (#2) Calculated Axial Stress (lb/in^2)
+     dataOut1(22) = Sxxo_str2;         % Stringer (#2) Calculated Axial Stress (lb/in^2)
      dataOut1(23) = S_allow_T_str2;   % Stringer (#2) Allowable Stress - Tension (lb/in^2)
      dataOut1(24) = S_allow_C_str2;   % Stringer (#2) Allowable Stress - Compression (lb/in^2)
      dataOut1(25) = MS_str2;          % Stringer (#2) Margin of Safety
-     dataOut1(26) = Sxx_str3;         % Stringer (#3) Calculated Axial Stress (lb/in^2)
+     dataOut1(26) = Sxxo_str3;         % Stringer (#3) Calculated Axial Stress (lb/in^2)
      dataOut1(27) = S_allow_T_str3;   % Stringer (#3) Allowable Stress - Tension (lb/in^2)
      dataOut1(28) = S_allow_C_str3;   % Stringer (#3) Allowable Stress - Compression (lb/in^2)
      dataOut1(29) = MS_str3;          % Stringer (#3) Margin of Safety
-     dataOut1(30) = Sxx_str4;         % Stringer (#4) Calculated Axial Stress (lb/in^2)
+     dataOut1(30) = Sxxo_str4;         % Stringer (#4) Calculated Axial Stress (lb/in^2)
      dataOut1(31) = S_allow_T_str4;   % Stringer (#4) Allowable Stress - Tension (lb/in^2)
      dataOut1(32) = S_allow_C_str4;   % Stringer (#4) Allowable Stress - Compression (lb/in^2)
      dataOut1(33) = MS_str4;          % Stringer (#4) Margin of Safety
