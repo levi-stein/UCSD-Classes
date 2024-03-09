@@ -351,14 +351,19 @@ A34 = (AreaEnclosed/2) - A41;
 % q34 = Mxo/(2*A34);
 % q41 = Mxo/(2*A41);
 
-delta = yc - Co/4;
+kyy = EIyy/(EIyy*EIzz - (EIyz^2));
+kzz = EIzz/(EIyy*EIzz - (EIyz^2));
+kyz = EIyz/(EIyy*EIzz - (EIyz^2));
+
+
+% delta = yc - Co/4;
 
 strMAT = [1 -1 0 0; 0 1 -1 0; 0 0 1 -1; 2*A12 2*A23 2*A34 2*A41];
 Mxmat = [0; 0; 0; 1];
-Vymat = [((Eo_str2*(10^6)*A_str2*yc_str2)/EIzz);((Eo_str3*(10^6)*A_str3*yc_str3)/EIzz);((Eo_str4*(10^6)*A_str4*yc_str4)/EIzz); 0];
-Vzmat = [((Eo_str2*(10^6)*A_str2*zc_str2)/EIyy);((Eo_str3*(10^6)*A_str3*zc_str3)/EIyy);((Eo_str4*(10^6)*A_str4*zc_str4)/EIyy); delta];
+Vymat = [((Eo_str2*(10^6)*A_str2*yc_str2));((Eo_str3*(10^6)*A_str3*yc_str3));((Eo_str4*(10^6)*A_str4*yc_str4)); 0];
+Vzmat = [((Eo_str2*(10^6)*A_str2*zc_str2));((Eo_str3*(10^6)*A_str3*zc_str3));((Eo_str4*(10^6)*A_str4*zc_str4)); 0];
 
-[q] = inv(strMAT)*(Mxo*(Mxmat) + Vyo*(Vymat) + Vzo*(Vzmat));
+[q] = inv(strMAT)*((Mxo - (zc)*Vyo + (yc - Co/4)*Vzo)*(Mxmat) + (Vyo*kyy - Vzo*kyz)*(Vymat) + (Vzo*kzz - Vyo*kyz)*(Vzmat));
 
 Tau_o_sk12 = (10^-3)*q(1)/to_sk;
 Tau_o_sk23 = (10^-3)*q(2)/to_sk;
@@ -366,13 +371,13 @@ Tau_o_sk34 = (10^-3)*q(3)/to_sk;
 Tau_o_sk41 = (10^-3)*q(4)/to_sk;
 
 Tau_allow_S_sk12 = min([(Sys_sk/SFy) (Sus_sk/SFu)]);
-
+MS_sk12 = (Tau_allow_S_sk12/abs(Tau_o_sk12)) - 1;
 Tau_allow_S_sk23 = Tau_allow_S_sk12;
-
+MS_sk23 = (Tau_allow_S_sk23/abs(Tau_o_sk23)) - 1;
 Tau_allow_S_sk34 = Tau_allow_S_sk12;
-
+MS_sk34 = (Tau_allow_S_sk34/abs(Tau_o_sk34)) - 1;
 Tau_allow_S_sk41 = Tau_allow_S_sk12;
-
+MS_sk41 = (Tau_allow_S_sk41/abs(Tau_o_sk41)) - 1;
 % . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 % .  SECTION (#5): Calculate the Data Arrays for Plotting
 % . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
@@ -407,7 +412,43 @@ for n = 1:nplot
     Mz(n) = Mzo - Vyo*(x(n)) + py0*(x(n)^2)/2 + pyr*(x(n)^(rth+2))/((rth+1)*(rth+2)*(Lo^rth));
 end
 
+for n = 1:nplot
+    Sxx_str1(n) = (10^3)*Eo_str1*[1 -(yc_str1) -(zc_str1)]*Snew*[Vx(n); Mz(n); -My(n)];
+    Sxx_str2(n) = (10^3)*Eo_str2*[1 -(yc_str2) -(zc_str2)]*Snew*[Vx(n); Mz(n); -My(n)];
+    Sxx_str3(n) = (10^3)*Eo_str3*[1 -(yc_str3) -(zc_str3)]*Snew*[Vx(n); Mz(n); -My(n)];
+    Sxx_str4(n) = (10^3)*Eo_str4*[1 -(yc_str4) -(zc_str4)]*Snew*[Vx(n); Mz(n); -My(n)];
+end
 
+for n = 1:nplot
+q1(:,n) = inv(strMAT)*((Mx(n) - (zc)*Vy(n) + (yc - Co/4)*Vz(n))*(Mxmat) + (Vy(n)*kyy - Vz(n)*kyz)*(Vymat) + (Vz(n)*kzz - Vy(n)*kyz)*(Vzmat));
+end
+[Tau_sk12] = (10^-3)*q1(1,:)/to_sk;
+[Tau_sk23] = (10^-3)*q1(2,:)/to_sk;
+[Tau_sk34] = (10^-3)*q1(3,:)/to_sk;
+[Tau_sk41] = (10^-3)*q1(4,:)/to_sk;
+
+for n = 1:nplot
+    DvDx(n) = kyy*(Mzo*x(n) - Vyo*(x(n)^2)/2 + py0*(x(n)^3)/6 + pyr*(x(n)^(rth+3))/((rth+1)*(rth+2)*(rth+3)*(Lo^rth))) - kyz*(Myo*x(n) + Vzo*(x(n)^2)/2 - pz0*((x(n)^3)/6) - (pz2/(Lo^2))*((x(n)^5)/60) - (pz4/(Lo^4))*((x(n)^7)/210) + (LF*rhoA*((x(n)^3)/6)));
+    DwDx(n) = kyz*(Mzo*x(n) - Vyo*(x(n)^2)/2 + py0*(x(n)^3)/6 + pyr*(x(n)^(rth+3))/((rth+1)*(rth+2)*(rth+3)*(Lo^rth))) - kzz*(Myo*x(n) + Vzo*(x(n)^2)/2 - pz0*((x(n)^3)/6) - (pz2/(Lo^2))*((x(n)^5)/60) - (pz4/(Lo^4))*((x(n)^7)/210) + (LF*rhoA*((x(n)^3)/6)));
+end
+
+ds12 = (C/4) + (yo_str2 - Co/4);
+ds23 = (S/2) - ds12;
+ds41 = (C/4) + (yo_str4 - Co/4);
+ds34 = (S/2) - ds41;
+
+% for n = 1:nplot
+% dsGt(n) = (((q1(1,n)*ds12)/(Go_sk*to_sk)) + ((q1(2,n)*ds23)/(Go_sk*to_sk)) + ((q1(3,n)*ds34)/(Go_sk*to_sk)) + ((q1(4,n)*ds41)/(Go_sk*to_sk)));
+% dtwistdx(n) = (Mx(n)/(4*AreaEnclosed^2))*dsGt(n);
+% end
+
+dsGt = (((ds12)/(Go_sk*(10^6)*to_sk)) + ((ds23)/(Go_sk*(10^6)*to_sk)) + ((ds34)/(Go_sk*(10^6)*to_sk)) + ((ds41)/(Go_sk*(10^6)*to_sk)));
+
+for n = 1:nplot
+
+Twist(n) = (S/(Go_sk*(10^6)*to_sk))*(1/(4*(AreaEnclosed^2)))*(Mxo*x(n) - mx0*(x(n)^2)/2 - (mx1/Lo)*((x(n)^3)/6) - ((Co/4) - yc)*(pz0*((x(n)^2)/2) + (pz2)*((x(n)^4)/(12*Lo^2)) + (pz4)*((x(n)^6)/(30*Lo^4))) - (yc - (Co/2))*(LF*(W_wing/Lo)*(x(n)^2)/2) - (zc)*(py0*(x(n)^2)/2 + (pyr/((rth+1)*(rth+2)))*((x(n)^(rth+2))/(Lo^rth))));
+
+end
 
 
 
