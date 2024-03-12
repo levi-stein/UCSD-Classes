@@ -1,4 +1,4 @@
-% function [name, PID, dataOut1, dataOut2] = Wing_Analysis_Function(dataIn);
+ function [name, PID, dataOut1, dataOut2] = Wing_Analysis_Function(dataIn);
 % + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + +
 % +
 % +  SE-160A:  Aerospace Structural Analysis I
@@ -385,12 +385,12 @@ MS_sk41 = (Tau_allow_S_sk41/abs(Tau_o_sk41)) - 1;
 
 x = linspace(0,Lo,nplot);
 PY = @(x) py0 + pyr*(x/Lo).^rth;
-PZ = @(x) pz0 + pz2*(x/Lo).^2 +pz4*(x/Lo).^4;
-MX = @(x) mx0 + mx1*(x/Lo);
+PZ = @(x) pz0 + pz2*(x/Lo).^2 + pz4*(x/Lo).^4 - (LF*(W_wing/Lo));
+MX = @(x) mx0 + mx1*(x/Lo) - (yc - Co/4)*(pz0 + pz2*(x/Lo).^2 + pz4*(x/Lo).^4) - (Co/2 - yc)*(LF*(W_wing/Lo)) + (zc)*(py0 + pyr*(x/Lo).^rth);
 
 for n = 1:nplot
     py(n) = PY(x(n));
-    pz(n) = PZ(x(n)) - LF*(W_wing/Lo)*(x(n));
+    pz(n) = PZ(x(n));
     mx(n) = MX(x(n));
 end
 
@@ -422,6 +422,7 @@ end
 for n = 1:nplot
 q1(:,n) = inv(strMAT)*((Mx(n) - (zc)*Vy(n) + (yc - Co/4)*Vz(n))*(Mxmat) + (Vy(n)*kyy - Vz(n)*kyz)*(Vymat) + (Vz(n)*kzz - Vy(n)*kyz)*(Vzmat));
 end
+
 [Tau_sk12] = (10^-3)*q1(1,:)/to_sk;
 [Tau_sk23] = (10^-3)*q1(2,:)/to_sk;
 [Tau_sk34] = (10^-3)*q1(3,:)/to_sk;
@@ -442,13 +443,39 @@ ds34 = (S/2) - ds41;
 % dtwistdx(n) = (Mx(n)/(4*AreaEnclosed^2))*dsGt(n);
 % end
 
-dsGt = (((ds12)/(Go_sk*(10^6)*to_sk)) + ((ds23)/(Go_sk*(10^6)*to_sk)) + ((ds34)/(Go_sk*(10^6)*to_sk)) + ((ds41)/(Go_sk*(10^6)*to_sk)));
+SGt = [(ds12/(Go_sk*(10^6)*to_sk)) (ds23/(Go_sk*(10^6)*to_sk)) (ds34/(Go_sk*(10^6)*to_sk)) (ds41/(Go_sk*(10^6)*to_sk))]; 
 
 for n = 1:nplot
 
-Twist(n) = (S/(Go_sk*(10^6)*to_sk))*(1/(4*(AreaEnclosed^2)))*(Mxo*x(n) - mx0*(x(n)^2)/2 - (mx1/Lo)*((x(n)^3)/6) - ((Co/4) - yc)*(pz0*((x(n)^2)/2) + (pz2)*((x(n)^4)/(12*Lo^2)) + (pz4)*((x(n)^6)/(30*Lo^4))) - (yc - (Co/2))*(LF*(W_wing/Lo)*(x(n)^2)/2) - (zc)*(py0*(x(n)^2)/2 + (pyr/((rth+1)*(rth+2)))*((x(n)^(rth+2))/(Lo^rth))));
+    Vy1(n) = Vyo*x(n) - py0*(x(n)^2)/2 - (pyr/((rth+1)*(rth+2)))*((x(n)^(rth+2))/(Lo^rth));
+    Vz1(n) = Vzo*x(n) - pz0*(x(n)^2)/2 - (pz2)*((x(n)^4)/(12*Lo^2)) - (pz4)*((x(n)^6)/(30*Lo^4)) + (LF*rhoA*Lo*((x(n)^2)/(2*Lo)));
+    Mx1(n) = Mxo*x(n) - mx0*(x(n)^2)/2 - (mx1/Lo)*((x(n)^3)/6) - ((Co/4) - yc)*(pz0*(x(n)^2)/2 + (pz2)*((x(n)^4)/(12*Lo^2)) + (pz4)*((x(n)^6)/(30*Lo^4)))...
+        - (yc - (Co/2))*(LF*(W_wing/Lo)*(x(n)^2)/2) - (zc)*(py0*(x(n)^2)/2 + (pyr/((rth+1)*(rth+2)))*((x(n)^(rth+2))/(Lo^rth)));
+
+    Twist(n) = (180/pi)*(1/(2*AreaEnclosed))*(SGt)*inv(strMAT)*((Mx1(n) - (zc)*Vy1(n) + (yc - Co/4)*Vz1(n))*Mxmat + (Vy1(n)*kyy - Vz1(n)*kyz)*Vymat + (Vz1(n)*kzz - Vy1(n)*kyz)*Vzmat);
 
 end
+
+for n = 1:nplot
+    Disp_Y(n) = kyy*(Mzo*((x(n)^2)/2) - (Vyo/2)*((x(n)^3)/3) + (py0/6)*((x(n)^4)/4) + pyr*(x(n)^(rth+4))/((rth+1)*(rth+2)*(rth+3)*(rth+4)*(Lo^rth))) - kyz*(Myo*((x(n)^2)/2) + Vzo*((x(n)^3/6)) - pz0*((x(n)^4)/24) - (pz2/(Lo^2))*((x(n)^6)/360) - (pz4/(Lo^4))*((x(n)^8)/1680) + (LF*rhoA*((x(n)^4)/24)));
+    Disp_Z(n) = kyz*(Mzo*((x(n)^2)/2) - (Vyo/2)*((x(n)^3)/3) + (py0/6)*((x(n)^4)/4) + pyr*(x(n)^(rth+4))/((rth+1)*(rth+2)*(rth+3)*(rth+4)*(Lo^rth))) - kzz*(Myo*((x(n)^2)/2) + Vzo*((x(n)^3/6)) - pz0*((x(n)^4)/24) - (pz2/(Lo^2))*((x(n)^6)/360) - (pz4/(Lo^4))*((x(n)^8)/1680) + (LF*rhoA*((x(n)^4)/24)));
+end
+
+fy = [(Eo_str2*(10^6)*A_str2*yc_str2*kyy - Eo_str2*(10^6)*A_str2*zc_str2*kyz);(Eo_str3*(10^6)*A_str3*yc_str3*kyy - Eo_str3*(10^6)*A_str3*zc_str3*kyz);(Eo_str4*(10^6)*A_str4*yc_str4*kyy - Eo_str4*(10^6)*A_str4*zc_str4*kyz); -zc];
+fz = [(Eo_str2*(10^6)*A_str2*zc_str2*kzz - Eo_str2*(10^6)*A_str2*yc_str2*kyz);(Eo_str3*(10^6)*A_str3*zc_str3*kzz - Eo_str3*(10^6)*A_str3*yc_str3*kyz);(Eo_str4*(10^6)*A_str4*zc_str4*kzz - Eo_str4*(10^6)*A_str4*yc_str4*kyz); (yc - Co/4)];
+
+% inv(strMAT)*((Mxo - (zc)*Vyo + (yc - Co/4)*Vzo)*(Mxmat) + (Vyo*kyy - Vzo*kyz)*(Vymat) + (Vzo*kzz - Vyo*kyz)*(Vzmat))
+% Mnew = (Mxo - (zc)*Vyo + (yc - Co/4)*Vzo)*(Mxmat);
+
+dtdxz = (1/(2*AreaEnclosed))*(SGt)*(strMAT\fz);
+dtdxy = (1/(2*AreaEnclosed))*(SGt)*(strMAT\fy);
+dtdxm = (1/(2*AreaEnclosed))*(SGt)*(strMAT\Mxmat);
+
+yscc = -dtdxz/dtdxm;
+ysc = yc + yscc;
+
+zscc = dtdxy/dtdxm;
+zsc = zc - zscc;
 
 
 
@@ -540,7 +567,7 @@ end
    
    end;
    
-% end
+ end
 
 %  End of Function: Wing_Analysis_Function
 %  ------------------------------------------------------------------------
