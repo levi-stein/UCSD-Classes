@@ -429,8 +429,8 @@ end
 [Tau_sk41] = (10^-3)*q1(4,:)/to_sk;
 
 for n = 1:nplot
-    DvDx(n) = kyy*(Mzo*x(n) - Vyo*(x(n)^2)/2 + py0*(x(n)^3)/6 + pyr*(x(n)^(rth+3))/((rth+1)*(rth+2)*(rth+3)*(Lo^rth))) - kyz*(Myo*x(n) + Vzo*(x(n)^2)/2 - pz0*((x(n)^3)/6) - (pz2/(Lo^2))*((x(n)^5)/60) - (pz4/(Lo^4))*((x(n)^7)/210) + (LF*rhoA*((x(n)^3)/6)));
-    DwDx(n) = kyz*(Mzo*x(n) - Vyo*(x(n)^2)/2 + py0*(x(n)^3)/6 + pyr*(x(n)^(rth+3))/((rth+1)*(rth+2)*(rth+3)*(Lo^rth))) - kzz*(Myo*x(n) + Vzo*(x(n)^2)/2 - pz0*((x(n)^3)/6) - (pz2/(Lo^2))*((x(n)^5)/60) - (pz4/(Lo^4))*((x(n)^7)/210) + (LF*rhoA*((x(n)^3)/6)));
+    DvDx(n) = kyy*(Mzo*x(n) - Vyo*(x(n)^2)/2 + py0*(x(n)^3)/6 + pyr*(x(n)^(rth+3))/((rth+1)*(rth+2)*(rth+3)*(Lo^rth))) + kyz*(Myo*x(n) + Vzo*(x(n)^2)/2 - pz0*((x(n)^3)/6) - (pz2/(Lo^2))*((x(n)^5)/60) - (pz4/(Lo^4))*((x(n)^7)/210) + (LF*rhoA*((x(n)^3)/6)));
+    DwDx(n) = -kyz*(Mzo*x(n) - Vyo*(x(n)^2)/2 + py0*(x(n)^3)/6 + pyr*(x(n)^(rth+3))/((rth+1)*(rth+2)*(rth+3)*(Lo^rth))) - kzz*(Myo*x(n) + Vzo*(x(n)^2)/2 - pz0*((x(n)^3)/6) - (pz2/(Lo^2))*((x(n)^5)/60) - (pz4/(Lo^4))*((x(n)^7)/210) + (LF*rhoA*((x(n)^3)/6)));
 end
 
 ds12 = (C/4) + (yo_str2 - Co/4);
@@ -457,8 +457,8 @@ for n = 1:nplot
 end
 
 for n = 1:nplot
-    Disp_Y(n) = kyy*(Mzo*((x(n)^2)/2) - (Vyo/2)*((x(n)^3)/3) + (py0/6)*((x(n)^4)/4) + pyr*(x(n)^(rth+4))/((rth+1)*(rth+2)*(rth+3)*(rth+4)*(Lo^rth))) - kyz*(Myo*((x(n)^2)/2) + Vzo*((x(n)^3/6)) - pz0*((x(n)^4)/24) - (pz2/(Lo^2))*((x(n)^6)/360) - (pz4/(Lo^4))*((x(n)^8)/1680) + (LF*rhoA*((x(n)^4)/24)));
-    Disp_Z(n) = kyz*(Mzo*((x(n)^2)/2) - (Vyo/2)*((x(n)^3)/3) + (py0/6)*((x(n)^4)/4) + pyr*(x(n)^(rth+4))/((rth+1)*(rth+2)*(rth+3)*(rth+4)*(Lo^rth))) - kzz*(Myo*((x(n)^2)/2) + Vzo*((x(n)^3/6)) - pz0*((x(n)^4)/24) - (pz2/(Lo^2))*((x(n)^6)/360) - (pz4/(Lo^4))*((x(n)^8)/1680) + (LF*rhoA*((x(n)^4)/24)));
+    Disp_Y(n) = kyy*(Mzo*((x(n)^2)/2) - (Vyo/2)*((x(n)^3)/3) + (py0/6)*((x(n)^4)/4) + pyr*(x(n)^(rth+4))/((rth+1)*(rth+2)*(rth+3)*(rth+4)*(Lo^rth))) + kyz*(Myo*((x(n)^2)/2) + Vzo*((x(n)^3/6)) - pz0*((x(n)^4)/24) - (pz2/(Lo^2))*((x(n)^6)/360) - (pz4/(Lo^4))*((x(n)^8)/1680) + (LF*rhoA*((x(n)^4)/24)));
+    Disp_Z(n) = -kyz*(Mzo*((x(n)^2)/2) - (Vyo/2)*((x(n)^3)/3) + (py0/6)*((x(n)^4)/4) + pyr*(x(n)^(rth+4))/((rth+1)*(rth+2)*(rth+3)*(rth+4)*(Lo^rth))) - kzz*(Myo*((x(n)^2)/2) + Vzo*((x(n)^3/6)) - pz0*((x(n)^4)/24) - (pz2/(Lo^2))*((x(n)^6)/360) - (pz4/(Lo^4))*((x(n)^8)/1680) + (LF*rhoA*((x(n)^4)/24)));
 end
 
 fy = [(Eo_str2*(10^6)*A_str2*yc_str2*kyy - Eo_str2*(10^6)*A_str2*zc_str2*kyz);(Eo_str3*(10^6)*A_str3*yc_str3*kyy - Eo_str3*(10^6)*A_str3*zc_str3*kyz);(Eo_str4*(10^6)*A_str4*yc_str4*kyy - Eo_str4*(10^6)*A_str4*zc_str4*kyz); -zc];
@@ -475,7 +475,7 @@ yscc = -dtdxz/dtdxm;
 ysc = yc + yscc;
 
 zscc = dtdxy/dtdxm;
-zsc = zc - zscc;
+zsc = zscc + zc;
 
 
 
