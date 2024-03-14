@@ -318,28 +318,44 @@ S_allow_T_str1 = min([(Syt_str1/SFy) (Sut_str1/SFu)]);
 S_allow_C_str1 = min([(Syc_str1/SFy) (Suc_str1/SFu)]);
 MS_str1T = (S_allow_T_str1/abs(Sxxo_str1)) - 1;
 MS_str1C = (abs(S_allow_C_str1)/abs(Sxxo_str1)) - 1;
-MS_str1 = min(MS_str1T, MS_str1C);
+if Sxxo_str1 > 0
+MS_str1 = MS_str1T;
+else 
+MS_str1 = MS_str1C;
+end
 
 Sxxo_str2 = (10^3)*Eo_str2*[1 -(yc_str2) -(zc_str2)]*Snew*Pmat;
 S_allow_T_str2 = min([(Syt_str2/SFy) (Sut_str2/SFu)]);
 S_allow_C_str2 = min([(Syc_str2/SFy) (Suc_str2/SFu)]);
 MS_str2T = (S_allow_T_str2/abs(Sxxo_str2)) - 1;
 MS_str2C = (abs(S_allow_C_str2)/abs(Sxxo_str2)) - 1;
-MS_str2 = min(MS_str2T, MS_str2C);
+if Sxxo_str2 > 0
+MS_str2 = MS_str2T;
+else 
+MS_str2 = MS_str2C;
+end
 
 Sxxo_str3 = (10^3)*Eo_str3*[1 -(yc_str3) -(zc_str3)]*Snew*Pmat;
 S_allow_T_str3 = min([(Syt_str3/SFy) (Sut_str3/SFu)]);
 S_allow_C_str3 = min([(Syc_str3/SFy) (Suc_str3/SFu)]);
 MS_str3T = (S_allow_T_str3/abs(Sxxo_str3)) - 1;
 MS_str3C = (abs(S_allow_C_str3)/abs(Sxxo_str3)) - 1;
-MS_str3 = min(MS_str3T, MS_str3C);
+if Sxxo_str3 > 0
+MS_str3 = MS_str3T;
+else 
+MS_str3 = MS_str3C;
+end
 
 Sxxo_str4 = (10^3)*Eo_str4*[1 -(yc_str4) -(zc_str4)]*Snew*Pmat;
 S_allow_T_str4 = min([(Syt_str4/SFy) (Sut_str4/SFu)]);
 S_allow_C_str4 = min([(Syc_str4/SFy) (Suc_str4/SFu)]);
 MS_str4T = (S_allow_T_str4/abs(Sxxo_str4)) - 1;
 MS_str4C = (abs(S_allow_C_str4)/abs(Sxxo_str4)) - 1;
-MS_str4 = min(MS_str4T, MS_str4C);
+if Sxxo_str4 > 0
+MS_str4 = MS_str4T;
+else 
+MS_str4 = MS_str4C;
+end
 
 A12 = (1/4)*pi*(Co/4)*(tmax/2) + (1/2)*(yo_str2 - (Co/4))*(tmax/2);
 A23 = (AreaEnclosed/2) - A12;
