@@ -2,8 +2,7 @@ function [d] = gerber(Tm,Ta,Mm,Ma,AISI,a,e,n,Dd)
 % Dynamic loading function for steel HR or CD shaft design using DE-Gerber failure theory
 % function takes inputs Tm (midrange torque[lb*in]), Ta (alternating torque [lb*in]), Mm
 % (midrange moment [lb*in]), Ma (alternating moment [lb*in]), AISI number for material
-% properties, a ('H' for Hot-rolled or 'C' for Cold-drawn/Machined), e (99,99.9,99.99), n (safety factor), Dd (D/d ratio takes inputs only between 2 and 1.1), and rd (r/d ratio can
-% only be 0.02 or 0.1)
+% properties, a (surface finish:'H' for Hot-rolled or 'C' for Cold-drawn/Machined), e (50,90,95,99,99.9,99.99), n (safety factor), Dd (D/d ratio takes inputs only between 2 and 1.1)
 % function returns converged value for estimated diameter [in]
 %% preliminary calc
 
@@ -69,7 +68,13 @@ elseif a == 'C'
     ka = 2.7*((Sut*10^-3)^(-0.265));
 end
 
-if e == 99
+if e == 50
+    ke = 1;
+elseif e == 90
+    ke = 0.897;
+elseif e == 95
+    ke = 0.868;
+elseif e == 99
     ke = 0.814;
 elseif e == 99.9
     ke = 0.753;
@@ -84,7 +89,7 @@ B1 = sqrt(4*(Kt1*Mm)^2 + 3*(Kts1*Tm)^2);
 
 d(1) = ((8*n*A1/(pi*Se1))*(1+(1+(2*B1*Se1/(A1*Sut))^2)^(1/2)))^(1/3);
 
-%% 2nd and further iterations
+%% 2nd iteration
 
 if Dd == 2
     Kt = 0.90879*(rd)^(-0.28598);
@@ -132,7 +137,7 @@ A2 = sqrt(4*(Kf1*Ma)^2 + 3*(Kfs1*Ta)^2);
 B2 = sqrt(4*(Kf1*Mm)^2 + 3*(Kfs1*Tm)^2);
 
 d(2) = ((8*n*A2/(pi*Se2))*(1+(1+(2*B2*Se2/(A2*Sut))^2)^(1/2)))^(1/3);
-
+%% Final iterations
 i = 1;
 while abs((d(i+1)-d(i))/d(i+1)) > 0.01
     q(i) = 1/(1 + (roota/sqrt(rd*d(i+1))));
