@@ -6,8 +6,8 @@
 % +  Project: (2) Wing Analysis
 % +
 % +  Title:   Wing_Analysis_Function
-% +  Author:  Student Name
-% +  PID:     Student PID
+% +  Author:  Levi Stein
+% +  PID:     A16791467
 % +  Revised: 02/25/2024
 % +
 % +  This function is the primary analysis function for the wing analysis 
