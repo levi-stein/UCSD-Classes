@@ -1,0 +1,19 @@
+#
+# nek parameter file
+#
+[GENERAL]
+dt = 1e-4
+numsteps = 1.5e6
+writeInterval = 10000
+
+[PROBLEMTYPE]
+equation = incompNS
+
+[VELOCITY]
+residualtol = 1e-8
+density = 1.0     # non-dimensional
+viscosity = -300  # Re
+
+[TEMPERATURE]
+solver = none
+advection = no

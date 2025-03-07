@@ -1,0 +1,12 @@
+-2                     spatial dimension (will create box.re2)
+2                      number of fields
+#
+#    comments: periodic khi instability
+#
+#========================================================
+#
+Box                                       khi12
+-16 -16                                   Nelx  Nely
+0.0 28 1.0                               x0 x1 ratio
+-40 40 1.0                                y0 y1 ratio
+P  ,P  ,v  ,v                             Velocity BC's:  (cbx0, cbx1, cby0, cby1)
